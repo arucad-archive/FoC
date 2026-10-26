@@ -1,0 +1,107 @@
+backend:
+  name: github
+  repo: RihardsVitols/FoC
+  branch: main
+  base_url: https://decap-oauth.vercel.app
+
+media_folder: "images/uploads"
+public_folder: "images/uploads"
+
+collections:
+  - name: "vcde_projects"
+    label: "VCDE Projects"
+    folder: "content/projects"
+    filter: { field: "category", value: "VCDE" }
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: ["title", "author", "date"]
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Student Name / Author", name: "author", widget: "string" }
+      - { label: "Date created", name: "date", widget: "datetime", format: "YYYY", dateFormat: "YYYY", timeFormat: false }
+      - { label: "Category", name: "category", widget: "hidden", default: "VCDE" }
+      - { label: "Cover Image (JPG, PNG, GIF, WEBP)", name: "image", widget: "image", required: false }
+      - { label: "Video URL (YouTube, Vimeo, or MP4)", name: "video", widget: "string", required: false }
+      - { label: "PDF Cover Screenshot", name: "pdf_cover", widget: "image", required: false }
+      - { label: "PDF Document", name: "pdf", widget: "file", required: false, media_library: { allow_multiple: false } }
+      - { label: "3D Model Cover Screenshot", name: "model_cover", widget: "image", required: false }
+      - { label: "3D Model (.glb, .gltf)", name: "model_3d", widget: "file", required: false }
+      - { label: "Interactive Web Cover Image", name: "interactive_cover", widget: "image", required: false }
+      - { label: "Interactive Web Path (e.g. content/interactive/my-project/index.html)", name: "interactive_url", widget: "string", required: false }
+      - { label: "Technique or materials", name: "excerpt", widget: "text", required: false }
+      - { label: "Full Project Details", name: "body", widget: "markdown", required: false }
+
+  - name: "game_projects"
+    label: "GAME Projects"
+    folder: "content/projects"
+    filter: { field: "category", value: "GAME" }
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: ["title", "author", "date"]
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Student Name / Author", name: "author", widget: "string" }
+      - { label: "Date created", name: "date", widget: "datetime", format: "YYYY", dateFormat: "YYYY", timeFormat: false }
+      - { label: "Category", name: "category", widget: "hidden", default: "GAME" }
+      - { label: "Cover Image (JPG, PNG, GIF, WEBP)", name: "image", widget: "image", required: false }
+      - { label: "Video URL (YouTube, Vimeo, or MP4)", name: "video", widget: "string", required: false }
+      - { label: "PDF Cover Screenshot", name: "pdf_cover", widget: "image", required: false }
+      - { label: "PDF Document", name: "pdf", widget: "file", required: false, media_library: { allow_multiple: false } }
+      - { label: "3D Model Cover Screenshot", name: "model_cover", widget: "image", required: false }
+      - { label: "3D Model (.glb, .gltf)", name: "model_3d", widget: "file", required: false }
+      - { label: "Interactive Web Cover Image", name: "interactive_cover", widget: "image", required: false }
+      - { label: "Interactive Web Path (e.g. content/interactive/my-project/index.html)", name: "interactive_url", widget: "string", required: false }
+      - { label: "Technique or materials", name: "excerpt", widget: "text", required: false }
+      - { label: "Full Project Details", name: "body", widget: "markdown", required: false }
+
+  - name: "nmc_projects"
+    label: "NMC Projects"
+    folder: "content/projects"
+    filter: { field: "category", value: "NMC" }
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: ["title", "author", "date"]
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Student Name / Author", name: "author", widget: "string" }
+      - { label: "Date created", name: "date", widget: "datetime", format: "YYYY", dateFormat: "YYYY", timeFormat: false }
+      - { label: "Category", name: "category", widget: "hidden", default: "NMC" }
+      - { label: "Cover Image (JPG, PNG, GIF, WEBP)", name: "image", widget: "image", required: false }
+      - { label: "Video URL (YouTube, Vimeo, or MP4)", name: "video", widget: "string", required: false }
+      - { label: "PDF Cover Screenshot", name: "pdf_cover", widget: "image", required: false }
+      - { label: "PDF Document", name: "pdf", widget: "file", required: false, media_library: { allow_multiple: false } }
+      - { label: "3D Model Cover Screenshot", name: "model_cover", widget: "image", required: false }
+      - { label: "3D Model (.glb, .gltf)", name: "model_3d", widget: "file", required: false }
+      - { label: "Interactive Web Cover Image", name: "interactive_cover", widget: "image", required: false }
+      - { label: "Interactive Web Path (e.g. content/interactive/my-project/index.html)", name: "interactive_url", widget: "string", required: false }
+      - { label: "Technique or materials", name: "excerpt", widget: "text", required: false }
+      - { label: "Full Project Details", name: "body", widget: "markdown", required: false }
+
+  - name: "finals_projects"
+    label: "Finals"
+    folder: "content/finals"
+    filter: { field: "category", value: "Finals" }
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: ["title", "author", "date"]
+    fields:
+      - label: "Department"
+        name: "finals_type"
+        widget: "select"
+        options: ["VCDE", "GAME", "NMC"]
+        default: "VCDE"
+        required: true
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Student Name / Author", name: "author", widget: "string" }
+      - { label: "Date created", name: "date", widget: "datetime", format: "YYYY", dateFormat: "YYYY", timeFormat: false }
+      - { label: "Category", name: "category", widget: "hidden", default: "Finals" }
+      - { label: "Cover Image (JPG, PNG, GIF, WEBP)", name: "image", widget: "image", required: false }
+      - { label: "Video URL (YouTube, Vimeo, or MP4)", name: "video", widget: "string", required: false }
+      - { label: "PDF Cover Screenshot", name: "pdf_cover", widget: "image", required: false }
+      - { label: "PDF Document", name: "pdf", widget: "file", required: false, media_library: { allow_multiple: false } }
+      - { label: "3D Model Cover Screenshot", name: "model_cover", widget: "image", required: false }
+      - { label: "3D Model (.glb, .gltf)", name: "model_3d", widget: "file", required: false }
+      - { label: "Interactive Web Cover Image", name: "interactive_cover", widget: "image", required: false }
+      - { label: "Interactive Web Path (e.g. content/interactive/my-project/index.html)", name: "interactive_url", widget: "string", required: false }
+      - { label: "Technic or materials", name: "excerpt", widget: "text", required: false }
+      - { label: "Full Project Details", name: "body", widget: "markdown", required: false }
