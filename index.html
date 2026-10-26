@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARUCAD | Faculty of Communication</title>
+
+    <!-- Umami Analytics (Async & Cookie-Free) -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="4ab1e217-00ce-466b-87db-d28045b559ee"></script>
+
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Fancybox 5 CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+
+    <!-- Google <model-viewer> and Meshoptimizer Configuration -->
+    <script type="module">
+        import { ModelViewerElement } from 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js';
+        ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer@0.19.0/meshopt_decoder.js';
+    </script>
+
+    <!-- EmbedPDF Web Component CDN -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@embedpdf/snippet@latest/dist/embedpdf.js"></script>
+
+    <!-- Link external CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="brand">
+                <img src="images/logo.png" alt="ARUCAD Logo" class="site-logo">
+                <span class="site-title">Faculty of Communication</span>
+            </div>
+
+            <div class="header-right">
+                <nav class="filter-container">
+                    <button class="filter-btn active" onclick="filterProjects('ALL', this)">ALL</button>
+                    <button class="filter-btn" onclick="filterProjects('VCDE', this)">VCDE</button>
+                    <button class="filter-btn" onclick="filterProjects('GAME', this)">GAME</button>
+                    <button class="filter-btn" onclick="filterProjects('NMC', this)">NMC</button>
+                    <button class="filter-btn" onclick="filterProjects('FINALS', this)">FINALS</button>
+                </nav>
+
+                <div class="social-links">
+                    <a href="https://www.instagram.com/arucad.communication.faculty/?utm_source=ig_web_button_share_sheet" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <img src="images/insta.png" alt="Instagram">
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <main id="portfolio-grid" class="portfolio-grid">
+            <p class="loading-text">Loading projects...</p>
+        </main>
+
+        <footer>
+            <p>&copy; ARUCAD Faculty of Communication | 2026</p>
+        </footer>
+    </div>
+
+    <!-- External Application Script -->
+    <script src="scripts.js"></script>
+</body>
+</html>

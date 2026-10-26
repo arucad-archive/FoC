@@ -1,0 +1,431 @@
+:root {
+    --bg-color: #FFFCF4; /* Fixed typo from --bf-color to --bg-color */
+    --text-color: #484d51;
+    --muted-color: #666666;
+    --border-color: #494C50;
+    --pdf-color: #f4f4f4;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 0 20px 40px 20px;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Updated Sticky Header */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;                     /* Keeps menu above scrolling cards */
+    background-color: var(--bg-color); /* Solid background using corrected variable */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 40px;
+}
+
+/* Container keeping logo & text together on the left */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Align site title and logo inline */
+.site-title {
+    font-size: 1.8rem !important;
+    font-weight: bold;
+    color: var(--text-color);
+    line-height: 1.2;
+}
+
+/* Logo Sizing */
+.site-logo {
+    height: 52px;
+    width: auto;
+    display: block;
+}
+
+/* Desktop Right Header Layout */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+/* Desktop Social Links Vertical Stack */
+.social-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.social-links a:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+.social-links img {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 0.95rem;
+}
+
+nav a:hover {
+    color: var(--text-color);
+}
+
+.intro {
+    max-width: 800px;
+    font-size: 1.25rem;
+    color: var(--muted-color);
+    margin-bottom: 50px;
+}
+
+/* Portfolio Grid */
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 40px 30px;
+    align-items: stretch;
+    position: relative;
+    z-index: 1;
+}
+
+/* Project Card Flex Layout */
+.project-card {
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    height: 100% !important;
+}
+
+/* Card Content Container */
+.card-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* Shared fixed-size media containers */
+.image-container,
+.video-container,
+.pdf-container {
+    width: 100%;
+    height: 240px !important;
+    background-color: var(--pdf-color);
+    margin-bottom: 15px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.2s ease;
+}
+
+.project-card:hover img {
+    opacity: 0.85;
+}
+
+/* Fix YouTube iframe scaling */
+.video-container {
+    padding-bottom: 0 !important;
+    margin-top: 0;
+}
+
+.video-container iframe,
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    border: 0;
+    object-fit: cover;
+    aspect-ratio: 16 / 9;
+}
+
+/* Embedded PDF Viewer Container */
+.pdf-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* PDF View Button/Link */
+.pdf-link-btn {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #0066cc;
+    text-decoration: underline;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.pdf-link-btn:hover {
+    color: #004499;
+}
+
+.meta {
+    font-size: 0.8rem;
+    color: var(--muted-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+}
+
+.project-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    flex-grow: 1;
+}
+
+.excerpt {
+    font-size: 0.9rem;
+    color: var(--muted-color);
+    margin-bottom: 12px;
+}
+
+/* Filter Navigation Buttons */
+.filter-container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.filter-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted-color, #666666);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: color 0.2s ease;
+    outline: none;
+}
+
+.filter-btn:hover {
+    color: var(--text-color, #111111);
+    font-weight: 700;
+}
+
+.filter-btn.active {
+    color: var(--text-color, #111111);
+    font-weight: 750;
+    border-bottom: 2px solid var(--text-color, #111111);
+    border-radius: 0;
+}
+
+/* Clickable Project Links */
+.full-details a.project-link {
+    color: #0066cc;
+    text-decoration: underline;
+    word-break: break-word;
+    transition: color 0.2s ease;
+}
+
+.full-details a.project-link:hover {
+    color: #004499;
+}
+
+/* Loading Placeholder Text */
+.loading-text {
+    color: var(--muted-color, #777777);
+    font-size: 0.95rem;
+    grid-column: 1 / -1;
+    padding: 30px 0;
+}
+
+/* Read Details Toggle Button */
+.toggle-btn {
+    background: transparent;
+    border: 1px solid var(--border-color, #eeeeee);
+    color: var(--text-color, #111111);
+    padding: 8px 16px;
+    margin-top: 0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.toggle-btn:hover {
+    background-color: var(--border-color, #111111);
+    color: var(--bg-color);
+}
+
+.full-details {
+    line-height: 1.6;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+/* Footer Section */
+footer {
+    margin-top: 80px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: var(--muted-color);
+    font-size: 0.85rem;
+}
+
+/* 3D Model Badge & Lightbox Container */
+.badge-3d {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.fancybox-3d-wrapper {
+    width: 80vw;
+    height: 80vh;
+    max-width: 1000px;
+    max-height: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fancybox-3d-wrapper model-viewer {
+    width: 100%;
+    height: 100%;
+    background-color: #f8f9fa;
+    display: block;
+}
+
+/* CRITICAL FIX: Forces Fancybox Lightbox to sit above the mobile header */
+.fancybox__container {
+    z-index: 999999 !important;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;                     
+        background-color: var(--bg-color) !important; 
+        opacity: 1 !important;                 
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+    } 
+
+    /* Ensures internal elements inherit the solid background completely */
+    header *,
+    .brand, 
+    .header-right, 
+    .filter-container {
+        background-color: var(--bg-color) !important;
+    } 
+
+    .brand {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .header-right {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .filter-container {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .social-links {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 2px;
+    }
+
+    .site-title {
+        font-size: 1.3rem !important;
+        white-space: normal;
+    }
+    
+    .site-logo {
+        height: 40px;
+    }
+
+    .portfolio-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .image-container,
+    .video-container,
+    .pdf-container {
+        height: 200px !important;
+    }
+
+    .toggle-btn {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        min-height: 44px;
+    }
+}
