@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: RihardsVitols/FoC
+  repo: arucad-archive/FoC
   branch: main
   base_url: https://decap-oauth.vercel.app
 
