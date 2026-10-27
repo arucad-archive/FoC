@@ -2,13 +2,13 @@
 const username = "arucad-archive";
 const repo = "FoC";
 
-let allProjects = [];      
+let allProjects = [];     
 let filteredProjects = []; 
-let visibleCount = 0;      
+let visibleCount = 0;     
 let isLoading = false; // Guard flag to prevent duplicate batch triggers
 
-const INITIAL_LOAD = 9;   // preloaded works
-const BATCH_LOAD = 3;     // load on scroll down next 3
+const INITIAL_LOAD = 9;   // Preloaded works count
+const BATCH_LOAD = 3;     // Batch count on scroll
 
 let observer = null; 
 
@@ -110,68 +110,22 @@ function parseMarkdownFrontMatter(text) {
     const parts = text.split('---');
     let bodyContent = parts.length >= 3 ? parts.slice(2).join('---').trim() : "";
 
-    // Image Path Formatting
-    let imagePath = getField("image");
-    if (imagePath) {
-        if (imagePath.startsWith('/')) imagePath = imagePath.substring(1);
-        if (!imagePath.startsWith('http')) {
-            imagePath = `https://arucad-archive.github.io/FoC/${imagePath}`;
-        }
-    }
+    // Dynamic Base URL resolving from username & repo parameters
+    const baseUrl = `https://${username.toLowerCase()}.github.io/${repo}`;
 
-    // PDF Path Formatting
-    let pdfPath = getField("pdf");
-    if (pdfPath) {
-        if (pdfPath.startsWith('/')) pdfPath = pdfPath.substring(1);
-        if (!pdfPath.startsWith('http')) {
-            pdfPath = `https://arucad-archive.github.io/FoC/${pdfPath}`;
-        }
-    }
+    const formatAssetPath = (path) => {
+        if (!path) return "";
+        let cleanPath = path.startsWith('/') ? path.substring(1) : path;
+        return cleanPath.startsWith('http') ? cleanPath : `${baseUrl}/${cleanPath}`;
+    };
 
-    // PDF Cover Screenshot Path Formatting
-    let pdfCoverPath = getField("pdf_cover");
-    if (pdfCoverPath) {
-        if (pdfCoverPath.startsWith('/')) pdfCoverPath = pdfCoverPath.substring(1);
-        if (!pdfCoverPath.startsWith('http')) {
-            pdfCoverPath = `https://arucad-archive.github.io/FoC/${pdfCoverPath}`;
-        }
-    }
-
-    // 3D Model Path Formatting (.glb / .gltf)
-    let model3dPath = getField("model_3d");
-    if (model3dPath) {
-        if (model3dPath.startsWith('/')) model3dPath = model3dPath.substring(1);
-        if (!model3dPath.startsWith('http')) {
-            model3dPath = `https://arucad-archive.github.io/FoC/${model3dPath}`;
-        }
-    }
-
-    // 3D Model Cover Screenshot Path Formatting
-    let modelCoverPath = getField("model_cover");
-    if (modelCoverPath) {
-        if (modelCoverPath.startsWith('/')) modelCoverPath = modelCoverPath.substring(1);
-        if (!modelCoverPath.startsWith('http')) {
-            modelCoverPath = `https://arucad-archive.github.io/FoC/${modelCoverPath}`;
-        }
-    }
-
-    // Interactive Web URL Path Formatting
-    let interactiveUrl = getField("interactive_url");
-    if (interactiveUrl) {
-        if (interactiveUrl.startsWith('/')) interactiveUrl = interactiveUrl.substring(1);
-        if (!interactiveUrl.startsWith('http')) {
-            interactiveUrl = `https://arucad-archive.github.io/FoC/${interactiveUrl}`;
-        }
-    }
-
-    // Interactive Web Cover Screenshot Path Formatting
-    let interactiveCoverPath = getField("interactive_cover");
-    if (interactiveCoverPath) {
-        if (interactiveCoverPath.startsWith('/')) interactiveCoverPath = interactiveCoverPath.substring(1);
-        if (!interactiveCoverPath.startsWith('http')) {
-            interactiveCoverPath = `https://arucad-archive.github.io/FoC/${interactiveCoverPath}`;
-        }
-    }
+    const imagePath = formatAssetPath(getField("image"));
+    const pdfPath = formatAssetPath(getField("pdf"));
+    const pdfCoverPath = formatAssetPath(getField("pdf_cover"));
+    const model3dPath = formatAssetPath(getField("model_3d"));
+    const modelCoverPath = formatAssetPath(getField("model_cover"));
+    const interactiveUrl = formatAssetPath(getField("interactive_url"));
+    const interactiveCoverPath = formatAssetPath(getField("interactive_cover"));
 
     const rawDate = getField("date");
     const yearOnly = rawDate ? rawDate.substring(0, 4) : "";
@@ -183,14 +137,14 @@ function parseMarkdownFrontMatter(text) {
         date: yearOnly,
         category: getField("category") || "Uncategorized",
         finalsType: getField("finals_type") || "",
-        image: imagePath || "",
+        image: imagePath,
         video: getField("video") || "",
-        pdf: pdfPath || "",
-        pdfCover: pdfCoverPath || "",
-        model3d: model3dPath || "",
-        modelCover: modelCoverPath || "",
-        interactiveUrl: interactiveUrl || "",
-        interactiveCover: interactiveCoverPath || "",
+        pdf: pdfPath,
+        pdfCover: pdfCoverPath,
+        model3d: model3dPath,
+        modelCover: modelCoverPath,
+        interactiveUrl: interactiveUrl,
+        interactiveCover: interactiveCoverPath,
         excerpt: getField("excerpt") || "",
         body: bodyContent
     };
