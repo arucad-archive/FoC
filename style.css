@@ -177,6 +177,50 @@ nav a:hover {
     opacity: 0.85;
 }
 
+/* PDF Grid Card Styling */
+.pdf-card-wrapper {
+    background: #2a2a2e;
+}
+
+.pdf-card-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    text-decoration: none;
+    color: #ffffff;
+    text-align: center;
+    transition: background 0.2s ease;
+}
+
+.pdf-card-link:hover {
+    background: #38383d;
+}
+
+.pdf-card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+}
+
+.pdf-card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+
+.pdf-card-btn {
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: #dddddd;
+}
+
 /* Fix YouTube iframe scaling */
 .video-container {
     padding-bottom: 0 !important;
