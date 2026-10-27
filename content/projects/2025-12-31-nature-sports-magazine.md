@@ -1,6 +1,6 @@
 ---
 title: Nature Sports Magazine
-author: ????????
+author: Ali Beyitoglulari
 date: "2026"
 category: NMC
 image: images/uploads/7.jpg
