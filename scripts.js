@@ -185,21 +185,19 @@ function renderVideoEmbed(url) {
     return "";
 }
 
+/* Lightbox PDF Rendering Function: Opens PDF cleanly in Fancybox popup without browser toolbars */
 function renderPdfThumbnail(pdfUrl, coverImgUrl, title, index) {
     if (!pdfUrl) return "";
 
-    if (coverImgUrl) {
-        return `
-            <div class="image-container">
-                <a href="${pdfUrl}" data-fancybox="project-${index}" data-type="pdf" data-caption="${title}">
-                    <img src="${coverImgUrl}" alt="${title}" loading="lazy">
-                </a>
-            </div>`;
-    }
+    const previewImage = coverImgUrl || 'images/default-pdf-cover.png';
+    const cleanPdfUrl = `${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`;
 
     return `
-        <div class="pdf-container">
-            <embed-pdf src="${pdfUrl}" theme="light" style="width:100%; height:100%; border:none;"></embed-pdf>
+        <div class="image-container">
+            <a href="${cleanPdfUrl}" data-fancybox="project-${index}" data-type="pdf" data-caption="${title}">
+                <img src="${previewImage}" alt="${title}" loading="lazy">
+                <span class="badge-3d" style="background: rgba(0,102,204,0.85);">📄 View PDF</span>
+            </a>
         </div>`;
 }
 
@@ -311,7 +309,7 @@ function loadMoreProjects(countToLoad) {
             </div>
 
             ${project.pdf && (project.image || project.video || project.model3d || project.interactiveUrl) ? `
-                <a href="${project.pdf}" data-fancybox="project-${index}" data-type="pdf" data-caption="${project.title}" 
+                <a href="${project.pdf}#toolbar=0&navpanes=0&scrollbar=0" data-fancybox="project-${index}" data-type="pdf" data-caption="${project.title}" 
                    data-umami-event="View Attached PDF" 
                    data-umami-event-title="${project.title}" 
                    class="pdf-link-btn">📄 View Attached PDF</a>
