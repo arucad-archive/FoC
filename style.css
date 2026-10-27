@@ -3,7 +3,7 @@
     --text-color: #484d51;
     --muted-color: #666666;
     --border-color: #494C50;
-    --pdf-color: #696969;
+    --pdf-color: #f4f4f4;
 }
 
 * {
@@ -29,7 +29,7 @@ body {
 header {
     position: sticky;
     top: 0;
-    z-index: 1000;                     /* Keeps menu above scrolling cards */
+    z-index: 1000;                      /* Keeps menu above scrolling cards */
     background-color: var(--bg-color); /* Solid background using corrected variable */
     display: flex;
     justify-content: space-between;
@@ -114,6 +114,18 @@ nav a:hover {
     margin-bottom: 50px;
 }
 
+/* Section heading matching top navigation menu style */
+.section-nav-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-color);
+    margin-top: 40px;
+    margin-bottom: 25px;
+    display: inline-block;
+}
+
 /* Portfolio Grid */
 .portfolio-grid {
     display: grid;
@@ -183,10 +195,13 @@ nav a:hover {
     aspect-ratio: 16 / 9;
 }
 
-/* Embedded PDF Viewer Container */
-.pdf-container iframe {
-    width: 100%;
-    height: 100%;
+/* Embedded PDF Web Component Styling */
+.pdf-container iframe,
+.pdf-container embed-pdf,
+embed-pdf {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
     border: none;
 }
 
