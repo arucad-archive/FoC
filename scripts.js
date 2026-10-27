@@ -1,5 +1,5 @@
 // Configuration
-const username = "RihardsVitols";
+const username = "arucad-archive";
 const repo = "FoC";
 
 let allProjects = [];      
@@ -115,7 +115,7 @@ function parseMarkdownFrontMatter(text) {
     if (imagePath) {
         if (imagePath.startsWith('/')) imagePath = imagePath.substring(1);
         if (!imagePath.startsWith('http')) {
-            imagePath = `https://rihardsvitols.github.io/FoC/${imagePath}`;
+            imagePath = `https://arucad-archive.github.io/FoC/${imagePath}`;
         }
     }
 
@@ -124,7 +124,7 @@ function parseMarkdownFrontMatter(text) {
     if (pdfPath) {
         if (pdfPath.startsWith('/')) pdfPath = pdfPath.substring(1);
         if (!pdfPath.startsWith('http')) {
-            pdfPath = `https://rihardsvitols.github.io/FoC/${pdfPath}`;
+            pdfPath = `https://arucad-archive.github.io/FoC/${pdfPath}`;
         }
     }
 
@@ -133,7 +133,7 @@ function parseMarkdownFrontMatter(text) {
     if (pdfCoverPath) {
         if (pdfCoverPath.startsWith('/')) pdfCoverPath = pdfCoverPath.substring(1);
         if (!pdfCoverPath.startsWith('http')) {
-            pdfCoverPath = `https://rihardsvitols.github.io/FoC/${pdfCoverPath}`;
+            pdfCoverPath = `https://arucad-archive.github.io/FoC/${pdfCoverPath}`;
         }
     }
 
@@ -142,7 +142,7 @@ function parseMarkdownFrontMatter(text) {
     if (model3dPath) {
         if (model3dPath.startsWith('/')) model3dPath = model3dPath.substring(1);
         if (!model3dPath.startsWith('http')) {
-            model3dPath = `https://rihardsvitols.github.io/FoC/${model3dPath}`;
+            model3dPath = `https://arucad-archive.github.io/FoC/${model3dPath}`;
         }
     }
 
@@ -151,7 +151,7 @@ function parseMarkdownFrontMatter(text) {
     if (modelCoverPath) {
         if (modelCoverPath.startsWith('/')) modelCoverPath = modelCoverPath.substring(1);
         if (!modelCoverPath.startsWith('http')) {
-            modelCoverPath = `https://rihardsvitols.github.io/FoC/${modelCoverPath}`;
+            modelCoverPath = `https://arucad-archive.github.io/FoC/${modelCoverPath}`;
         }
     }
 
@@ -160,7 +160,7 @@ function parseMarkdownFrontMatter(text) {
     if (interactiveUrl) {
         if (interactiveUrl.startsWith('/')) interactiveUrl = interactiveUrl.substring(1);
         if (!interactiveUrl.startsWith('http')) {
-            interactiveUrl = `https://rihardsvitols.github.io/FoC/${interactiveUrl}`;
+            interactiveUrl = `https://arucad-archive.github.io/FoC/${interactiveUrl}`;
         }
     }
 
@@ -169,7 +169,7 @@ function parseMarkdownFrontMatter(text) {
     if (interactiveCoverPath) {
         if (interactiveCoverPath.startsWith('/')) interactiveCoverPath = interactiveCoverPath.substring(1);
         if (!interactiveCoverPath.startsWith('http')) {
-            interactiveCoverPath = `https://rihardsvitols.github.io/FoC/${interactiveCoverPath}`;
+            interactiveCoverPath = `https://arucad-archive.github.io/FoC/${interactiveCoverPath}`;
         }
     }
 
