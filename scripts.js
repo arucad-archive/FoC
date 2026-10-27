@@ -185,26 +185,27 @@ function renderVideoEmbed(url) {
     return "";
 }
 
-/* Render Native Chromium PDF Engine with Sidebar Thumbnails & Top Controls */
+/* Render PDF Card for Grid and Launch Fancybox Lightbox on Click */
 function renderPdfThumbnail(pdfUrl, coverImgUrl, title, index) {
     if (!pdfUrl) return "";
 
     if (coverImgUrl) {
         return `
             <div class="image-container">
-                <a href="${pdfUrl}#navpanes=1&toolbar=1" data-fancybox="project-${index}" data-type="pdf" data-caption="${title}">
+                <a href="${pdfUrl}" data-fancybox="project-${index}" data-type="pdf" data-caption="${title}">
                     <img src="${coverImgUrl}" alt="${title}" loading="lazy">
+                    <span class="badge-3d" style="background: rgba(0, 102, 204, 0.85);">📄 View PDF</span>
                 </a>
             </div>`;
     }
 
     return `
-        <div class="pdf-container">
-            <iframe src="${pdfUrl}#navpanes=1&toolbar=1&view=FitH" 
-                    type="application/pdf" 
-                    style="width: 100%; height: 100%; border: none;">
-                <p>Your browser does not support inline PDFs. <a href="${pdfUrl}" target="_blank">Download PDF</a></p>
-            </iframe>
+        <div class="image-container pdf-card-wrapper">
+            <a href="${pdfUrl}" data-fancybox="project-${index}" data-type="pdf" data-caption="${title}" class="pdf-card-link">
+                <div class="pdf-card-icon">📄</div>
+                <div class="pdf-card-title">${title}</div>
+                <span class="pdf-card-btn">Click to View Document</span>
+            </a>
         </div>`;
 }
 
@@ -316,7 +317,7 @@ function loadMoreProjects(countToLoad) {
             </div>
 
             ${project.pdf && (project.image || project.video || project.model3d || project.interactiveUrl) ? `
-                <a href="${project.pdf}#navpanes=1&toolbar=1" data-fancybox="project-${index}" data-type="pdf" data-caption="${project.title}" 
+                <a href="${project.pdf}" data-fancybox="project-${index}" data-type="pdf" data-caption="${project.title}" 
                    data-umami-event="View Attached PDF" 
                    data-umami-event-title="${project.title}" 
                    class="pdf-link-btn">📄 View Attached PDF</a>
