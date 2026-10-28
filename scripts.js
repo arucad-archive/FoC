@@ -1,4 +1,3 @@
-// Configuration
 const username = "arucad-archive";
 const repo = "FoC";
 
