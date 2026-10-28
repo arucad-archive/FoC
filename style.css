@@ -92,7 +92,8 @@ header {
 
 .social-links img {
     width: 20px;
-    height: 20px;
+    /* height: 20px; */
+    height: auto;
     display: block;
 }
 
