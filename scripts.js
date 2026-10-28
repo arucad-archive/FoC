@@ -11,6 +11,18 @@ const BATCH_LOAD = 3;     // Batch count on scroll
 
 let observer = null; 
 
+// Helper function to turn titles into clean Fancybox group names (e.g., "Templos Zeytinlik" -> "templos-zeytinlik")
+function slugify(text) {
+    if (!text) return "project";
+    return text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove non-word chars
+        .replace(/\-\-+/g, '-');        // Replace multiple - with single -
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     setupIntersectionObserver();
     fetchProjects();
@@ -188,10 +200,12 @@ function renderVideoEmbed(url) {
 function renderPdfThumbnail(pdfUrl, coverImgUrl, title, index) {
     if (!pdfUrl) return "";
 
+    const projectSlug = slugify(title);
+
     if (coverImgUrl) {
         return `
             <div class="image-container">
-                <a href="${pdfUrl}" data-fancybox="project-${index}" data-type="pdf" data-caption="${title}">
+                <a href="${pdfUrl}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${title}">
                     <img src="${coverImgUrl}" alt="${title}" loading="lazy">
                     <span class="badge-3d" style="background: rgba(0, 102, 204, 0.85);">📄 View PDF</span>
                 </a>
@@ -200,7 +214,7 @@ function renderPdfThumbnail(pdfUrl, coverImgUrl, title, index) {
 
     return `
         <div class="image-container pdf-card-wrapper">
-            <a href="${pdfUrl}" data-fancybox="project-${index}" data-type="pdf" data-caption="${title}" class="pdf-card-link">
+            <a href="${pdfUrl}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${title}" class="pdf-card-link">
                 <div class="pdf-card-icon">📄</div>
                 <div class="pdf-card-title">${title}</div>
                 <span class="pdf-card-btn">Click to View Document</span>
@@ -212,6 +226,7 @@ function render3DModelCard(modelUrl, coverImgUrl, title, index) {
     if (!modelUrl) return "";
 
     const previewImage = coverImgUrl || 'images/default-3d-cover.png';
+    const projectSlug = slugify(title);
 
     const modelHTML = `
         <div class="fancybox-3d-wrapper">
@@ -220,7 +235,7 @@ function render3DModelCard(modelUrl, coverImgUrl, title, index) {
 
     return `
         <div class="image-container">
-            <a href="javascript:;" data-fancybox="project-${index}" data-type="html" data-src='${modelHTML}' data-caption="${title}">
+            <a href="javascript:;" data-fancybox="${projectSlug}" data-type="html" data-src='${modelHTML}' data-caption="${title}">
                 <img src="${previewImage}" alt="${title}" loading="lazy">
                 <span class="badge-3d">📦 3D Model</span>
             </a>
@@ -272,6 +287,7 @@ function loadMoreProjects(countToLoad) {
 
     nextBatch.forEach((project) => {
         const index = visibleCount;
+        const projectSlug = slugify(project.title);
         const card = document.createElement('div');
         card.className = 'project-card';
         
@@ -298,7 +314,7 @@ function loadMoreProjects(countToLoad) {
         } else if (project.image) {
             mediaHTML = `
                 <div class="image-container">
-                    <a href="${project.image}" data-fancybox="project-${index}" data-caption="${project.title}">
+                    <a href="${project.image}" data-fancybox="${projectSlug}" data-caption="${project.title}">
                         <img src="${project.image}" alt="${project.title}" loading="lazy">
                     </a>
                 </div>`;
@@ -316,7 +332,7 @@ function loadMoreProjects(countToLoad) {
             </div>
 
             ${project.pdf && (project.image || project.video || project.model3d || project.interactiveUrl) ? `
-                <a href="${project.pdf}" data-fancybox="project-${index}" data-type="pdf" data-caption="${project.title}" 
+                <a href="${project.pdf}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${project.title}" 
                    data-umami-event="View Attached PDF" 
                    data-umami-event-title="${project.title}" 
                    class="pdf-link-btn">📄 View Attached PDF</a>
