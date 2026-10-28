@@ -2,7 +2,7 @@
 title: Festival Poster Design
 author: Nisa Kara
 date: "2026"
-category: NMC
+category: YMED
 image: images/uploads/5.jpg
 excerpt: Raster graphics
 ---
