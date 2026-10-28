@@ -92,7 +92,6 @@ header {
 
 .social-links img {
     width: 20px;
-    /* height: 20px; */
     height: auto;
     display: block;
 }
@@ -456,11 +455,15 @@ footer {
         gap: 12px;
     }
 
+    /* HORIZONTAL SOCIAL LINKS ON MOBILE */
     .social-links {
         display: flex;
+        flex-direction: row;        /* Changes vertical stack to side-by-side row */
+        align-items: center;
         justify-content: center;
         width: 100%;
-        margin-top: 2px;
+        gap: 16px;                  /* Spacing between social icons */
+        margin-top: 5px;
     }
 
     .site-title {
