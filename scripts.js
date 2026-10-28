@@ -161,16 +161,25 @@ function parseMarkdownFrontMatter(text) {
     };
 }
 
-function renderVideoEmbed(url) {
+/* Video Card Helper: Supports YouTube Lightbox & Direct Player Embeds with Umami Event Tracking */
+function renderVideoEmbed(url, coverImgUrl, title, projectSlug) {
     if (!url) return "";
 
     const youtubeMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+    
     if (youtubeMatch) {
+        const videoId = youtubeMatch[1];
+        const previewImage = coverImgUrl || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
+
         return `
-            <div class="video-container">
-                <iframe src="https://www.youtube-nocookie.com/embed/${youtubeMatch[1]}" 
-                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen></iframe>
+            <div class="image-container">
+                <a href="${embedUrl}" data-fancybox="${projectSlug}" data-type="iframe" data-caption="${title}"
+                   data-umami-event="Play YouTube Video"
+                   data-umami-event-title="${title}">
+                    <img src="${previewImage}" alt="${title}" loading="lazy">
+                    <span class="badge-3d" style="background: rgba(204, 0, 0, 0.85);">▶ Play Video</span>
+                </a>
             </div>`;
     }
 
@@ -205,7 +214,9 @@ function renderPdfThumbnail(pdfUrl, coverImgUrl, title, index) {
     if (coverImgUrl) {
         return `
             <div class="image-container">
-                <a href="${pdfUrl}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${title}">
+                <a href="${pdfUrl}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${title}"
+                   data-umami-event="View PDF Document"
+                   data-umami-event-title="${title}">
                     <img src="${coverImgUrl}" alt="${title}" loading="lazy">
                     <span class="badge-3d" style="background: rgba(0, 102, 204, 0.85);">📄 View PDF</span>
                 </a>
@@ -214,7 +225,9 @@ function renderPdfThumbnail(pdfUrl, coverImgUrl, title, index) {
 
     return `
         <div class="image-container pdf-card-wrapper">
-            <a href="${pdfUrl}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${title}" class="pdf-card-link">
+            <a href="${pdfUrl}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${title}" class="pdf-card-link"
+               data-umami-event="View PDF Document"
+               data-umami-event-title="${title}">
                 <div class="pdf-card-icon">📄</div>
                 <div class="pdf-card-title">${title}</div>
                 <span class="pdf-card-btn">Click to View Document</span>
@@ -235,7 +248,9 @@ function render3DModelCard(modelUrl, coverImgUrl, title, index) {
 
     return `
         <div class="image-container">
-            <a href="javascript:;" data-fancybox="${projectSlug}" data-type="html" data-src='${modelHTML}' data-caption="${title}">
+            <a href="javascript:;" data-fancybox="${projectSlug}" data-type="html" data-src='${modelHTML}' data-caption="${title}"
+               data-umami-event="View 3D Model"
+               data-umami-event-title="${title}">
                 <img src="${previewImage}" alt="${title}" loading="lazy">
                 <span class="badge-3d">📦 3D Model</span>
             </a>
@@ -310,7 +325,7 @@ function loadMoreProjects(countToLoad) {
         } else if (project.model3d) {
             mediaHTML = render3DModelCard(project.model3d, project.modelCover || project.image, project.title, index);
         } else if (project.video) {
-            mediaHTML = renderVideoEmbed(project.video);
+            mediaHTML = renderVideoEmbed(project.video, project.image, project.title, projectSlug);
         } else if (project.image) {
             mediaHTML = `
                 <div class="image-container">
