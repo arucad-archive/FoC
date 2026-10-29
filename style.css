@@ -29,8 +29,8 @@ body {
 header {
     position: sticky;
     top: 0;
-    z-index: 1000;                      /* Keeps menu above scrolling cards */
-    background-color: var(--bg-color); /* Solid background using corrected variable */
+    z-index: 1000;
+    background-color: var(--bg-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -40,14 +40,12 @@ header {
     margin-bottom: 40px;
 }
 
-/* Container keeping logo & text together on the left */
 .brand {
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
-/* Align site title and logo inline */
 .site-title {
     font-size: 1.8rem !important;
     font-weight: bold;
@@ -55,21 +53,18 @@ header {
     line-height: 1.2;
 }
 
-/* Logo Sizing */
 .site-logo {
     height: 52px;
     width: auto;
     display: block;
 }
 
-/* Desktop Right Header Layout */
 .header-right {
     display: flex;
     align-items: center;
     gap: 25px;
 }
 
-/* Desktop Social Links Vertical Stack */
 .social-links {
     display: flex;
     flex-direction: column;
@@ -114,7 +109,6 @@ nav a:hover {
     margin-bottom: 50px;
 }
 
-/* Section heading matching top navigation menu style */
 .section-nav-title {
     font-size: 0.95rem;
     font-weight: 700;
@@ -126,32 +120,31 @@ nav a:hover {
     display: inline-block;
 }
 
-/* Portfolio Grid */
+/* Portfolio Grid - Aligned to top so adjacent posts never move down when expanding details */
 .portfolio-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 40px 30px;
-    align-items: start; /* Prevents adjacent grid cards from moving when details open */
+    align-items: start;
     position: relative;
     z-index: 1;
 }
 
-/* Project Card Container */
+/* Project Card Flex Layout */
 .project-card {
     text-decoration: none;
     color: var(--text-color);
     display: flex;
     flex-direction: column;
-    min-height: 420px;  /* Equalizes unexpanded card height across rows */
-    height: auto;
-    position: relative;
+    height: 100%;
+    min-height: 410px; /* Gives unexpanded cards identical height across the row */
 }
 
-/* Card Content Container */
+/* CLASS 1: Top Content Container (Author, Title, Technique) */
 .card-content {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    flex-grow: 1; /* Takes available space to push technique text to the bottom */
 }
 
 /* Shared fixed-size media containers */
@@ -241,7 +234,6 @@ nav a:hover {
     aspect-ratio: 16 / 9;
 }
 
-/* Embedded PDF Web Component Styling */
 .pdf-container iframe,
 .pdf-container embed-pdf,
 embed-pdf {
@@ -251,10 +243,9 @@ embed-pdf {
     border: none;
 }
 
-/* PDF View Button/Link */
 .pdf-link-btn {
     display: inline-block;
-    margin-top: 8px;
+    margin-bottom: 10px;
     font-size: 0.85rem;
     color: #0066cc;
     text-decoration: underline;
@@ -278,18 +269,23 @@ embed-pdf {
     font-size: 1.2rem;
     font-weight: 500;
     margin-bottom: 8px;
-    flex-grow: 0;
 }
 
-/* Technique string anchored to the bottom right above the button */
+/* Technique String: Permanently locked at the bottom edge of .card-content */
 .excerpt {
     font-size: 0.9rem;
     color: var(--muted-color);
-    margin-top: auto;   /* Locks technique label above the button */
+    margin-top: auto;   /* Anchors technique text cleanly above the button */
     margin-bottom: 12px;
 }
 
-/* Filter Navigation Buttons */
+/* CLASS 2: Separate Bottom Footer Container (Button & Expanded Body) */
+.card-footer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 .filter-container {
     display: flex;
     gap: 20px;
@@ -320,7 +316,6 @@ embed-pdf {
     border-radius: 0;
 }
 
-/* Clickable Project Links */
 .full-details a.project-link {
     color: #0066cc;
     text-decoration: underline;
@@ -332,7 +327,6 @@ embed-pdf {
     color: #004499;
 }
 
-/* Loading Placeholder Text */
 .loading-text {
     color: var(--muted-color, #777777);
     font-size: 0.95rem;
@@ -359,6 +353,7 @@ embed-pdf {
     color: var(--bg-color);
 }
 
+/* Full Details Content (Expands inside .card-footer cleanly) */
 .full-details {
     line-height: 1.6;
     font-size: 0.9rem;
@@ -367,7 +362,6 @@ embed-pdf {
     padding-top: 10px;
 }
 
-/* Footer Section */
 footer {
     margin-top: 80px;
     padding-top: 20px;
@@ -376,7 +370,6 @@ footer {
     font-size: 0.85rem;
 }
 
-/* 3D Model Badge & Lightbox Container */
 .badge-3d {
     position: absolute;
     bottom: 10px;
@@ -406,12 +399,10 @@ footer {
     display: block;
 }
 
-/* CRITICAL FIX: Forces Fancybox Lightbox to sit above the mobile header */
 .fancybox__container {
     z-index: 999999 !important;
 }
 
-/* Mobile Responsive Adjustments */
 @media (max-width: 768px) {
     .container {
         padding: 15px;
@@ -433,7 +424,6 @@ footer {
         border-bottom: 1px solid var(--border-color);
     } 
 
-    /* Ensures internal elements inherit the solid background completely */
     header *,
     .brand, 
     .header-right, 
@@ -461,14 +451,13 @@ footer {
         gap: 12px;
     }
 
-    /* HORIZONTAL SOCIAL LINKS ON MOBILE */
     .social-links {
         display: flex;
-        flex-direction: row;        /* Changes vertical stack to side-by-side row */
+        flex-direction: row;
         align-items: center;
         justify-content: center;
         width: 100%;
-        gap: 16px;                  /* Spacing between social icons */
+        gap: 16px;
         margin-top: 5px;
     }
 
