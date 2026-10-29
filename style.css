@@ -131,7 +131,8 @@ nav a:hover {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 40px 30px;
-    align-items: stretch;
+    /* align-items: stretch; */
+    align-items: start;
     position: relative;
     z-index: 1;
 }
