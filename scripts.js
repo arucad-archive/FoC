@@ -7,7 +7,7 @@ let visibleCount = 0;
 let isLoading = false; 
 
 const INITIAL_LOAD = 9;   
-const BATCH_LOAD =     3;     
+const BATCH_LOAD = 3;     
 
 let observer = null; 
 
@@ -389,51 +389,33 @@ function toggleDetails(index) {
     if (!detailsDiv) return;
     const btn = detailsDiv.previousElementSibling;
     const card = btn.closest('.project-card');
+    const cardFooter = card.querySelector('.card-footer');
 
-    const grid = document.getElementById('portfolio-grid');
     const isExpanded = card.dataset.expanded === "true";
 
-    // Close any other open details first across the grid and restore them
-    document.querySelectorAll('.expanded-row-wrapper').forEach(wrapper => {
-        const innerDetails = wrapper.querySelector('.full-details');
+    // Close all other open details across the grid first and restore them
+    document.querySelectorAll('.project-card').forEach(c => {
+        c.dataset.expanded = "false";
+        const wrapper = c.querySelector('.expanded-row-wrapper');
+        if (wrapper) wrapper.remove();
+        const innerDetails = c.querySelector('.full-details');
         if (innerDetails) {
             innerDetails.style.display = "none";
-            const originalCardId = wrapper.dataset.targetCardId;
-            if (originalCardId) {
-                const targetEl = document.getElementById(`details-${originalCardId}`);
-                if (targetEl) {
-                    const originalCard = targetEl.closest('.project-card');
-                    if (originalCard) {
-                        originalCard.querySelector('.card-footer').appendChild(innerDetails);
-                        originalCard.dataset.expanded = "false";
-                    }
-                }
-            }
+            c.querySelector('.card-footer').appendChild(innerDetails);
         }
-        wrapper.remove();
+        const b = c.querySelector('.toggle-btn');
+        if (b) b.innerText = "Read Full Details";
     });
-    document.querySelectorAll('.toggle-btn').forEach(b => b.innerText = "Read Full Details");
 
     if (!isExpanded) {
-        // Create full-width wrapper spanning the entire row
+        // Create an inline wrapper directly inside this card's footer
         const wrapper = document.createElement('div');
         wrapper.className = 'expanded-row-wrapper';
-        wrapper.dataset.targetCardId = index;
         
         detailsDiv.style.display = "block";
         wrapper.appendChild(detailsDiv);
 
-        // Find the correct row end to insert the expansion wrapper beneath it
-        const gridItems = Array.from(grid.children).filter(el => el.classList.contains('project-card'));
-        const cardIndex = gridItems.indexOf(card);
-        const computedStyle = window.getComputedStyle(grid);
-        const columnsCount = computedStyle.getPropertyValue('grid-template-columns').split(' ').length;
-        
-        const rowIndex = Math.floor(cardIndex / columnsCount);
-        const lastCardInRowIndex = Math.min((rowIndex + 1) * columnsCount - 1, gridItems.length - 1);
-        const targetCardInDom = gridItems[lastCardInRowIndex];
-
-        targetCardInDom.parentNode.insertBefore(wrapper, targetCardInDom.nextSibling);
+        cardFooter.appendChild(wrapper);
 
         card.dataset.expanded = "true";
         btn.innerText = "Hide Details";
