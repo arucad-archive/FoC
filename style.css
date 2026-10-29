@@ -126,12 +126,12 @@ nav a:hover {
     display: inline-block;
 }
 
-/* Portfolio Grid */
+/* Portfolio Grid: Stretch cards to equal height per row */
 .portfolio-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 40px 30px;
-    align-items: start;
+    align-items: stretch; /* Stretches row items to uniform row height */
     position: relative;
     z-index: 1;
 }
@@ -142,15 +142,14 @@ nav a:hover {
     color: var(--text-color);
     display: flex;
     flex-direction: column;
-    height: auto !important; /* FIX: Prevents stretching row track */
-    align-self: start;       /* FIX: Anchors card to top track independently */
+    height: 100% !important; /* Fills full height of stretched grid cell */
 }
 
-/* Card Content Container */
+/* Card Content Container: Wraps meta, title, and technique */
 .card-content {
     display: flex;
     flex-direction: column;
-    flex-grow: 0;
+    flex-grow: 1; /* Pushes technique label and toggle button down */
 }
 
 /* Shared fixed-size media containers */
@@ -273,12 +272,15 @@ embed-pdf {
     margin-bottom: 5px;
 }
 
+/* Title takes up remaining vertical space to absorb row height differences */
 .project-title {
     font-size: 1.2rem;
     font-weight: 500;
     margin-bottom: 8px;
+    flex-grow: 1; /* Pushes technique label and button down */
 }
 
+/* Technique / Excerpt sits right above the toggle button */
 .excerpt {
     font-size: 0.9rem;
     color: var(--muted-color);
@@ -336,7 +338,7 @@ embed-pdf {
     padding: 30px 0;
 }
 
-/* Read Details Toggle Button */
+/* Read Details Toggle Button: Positioned directly under technique */
 .toggle-btn {
     background: transparent;
     border: 1px solid var(--border-color, #eeeeee);
