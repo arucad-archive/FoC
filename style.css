@@ -25,7 +25,7 @@ body {
     margin: 0 auto;
 }
 
-/* Updated Sticky Header */
+/* Sticky Header */
 header {
     position: sticky;
     top: 0;
@@ -120,29 +120,31 @@ nav a:hover {
     display: inline-block;
 }
 
-/* Portfolio Grid - Aligned to top so adjacent posts never move down when expanding details */
+/* Portfolio Grid: Stretch cards in each row to match equal height */
 .portfolio-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 40px 30px;
-    align-items: start;
+    gap: 60px 30px; /* Extra row gap accommodates absolute expanded text */
+    align-items: stretch; /* Forces equal height across row cells */
     position: relative;
     z-index: 1;
 }
 
-/* Project Card Flex Layout */
+/* Project Card Flex Container */
 .project-card {
     text-decoration: none;
     color: var(--text-color);
     display: flex;
     flex-direction: column;
-    height: auto; /* Natural height hugs content without leaving large vertical gaps */
+    height: 100%; /* Fills row cell completely */
+    position: relative; /* Anchor for absolute full-details overlay */
 }
 
-/* CLASS 1: Top Content Container (Author, Title, Technique) */
+/* TOP CONTENT AREA: Takes up available space to push technique string down */
 .card-content {
     display: flex;
     flex-direction: column;
+    flex-grow: 1; /* Pushes technique label (.excerpt) to the bottom edge */
 }
 
 /* Shared fixed-size media containers */
@@ -170,7 +172,6 @@ nav a:hover {
     opacity: 0.85;
 }
 
-/* PDF Grid Card Styling */
 .pdf-card-wrapper {
     background: #2a2a2e;
 }
@@ -214,7 +215,6 @@ nav a:hover {
     color: #dddddd;
 }
 
-/* Fix YouTube iframe scaling */
 .video-container {
     padding-bottom: 0 !important;
     margin-top: 0;
@@ -266,22 +266,23 @@ embed-pdf {
 .project-title {
     font-size: 1.2rem;
     font-weight: 500;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
-/* Technique String: Sits naturally right underneath the project title */
+/* Technique string: Locked to the bottom edge of .card-content so all labels align horizontally */
 .excerpt {
     font-size: 0.9rem;
     color: var(--muted-color);
-    margin-top: 0;
+    margin-top: auto; /* Aligns "Unity, Blender", "GoDot", "Blender" perfectly across the row */
     margin-bottom: 12px;
 }
 
-/* CLASS 2: Separate Bottom Footer Container (Button & Expanded Body) */
+/* BOTTOM FOOTER CONTAINER: Holds toggle button and expanding overlay */
 .card-footer {
     display: flex;
     flex-direction: column;
     width: 100%;
+    position: relative;
 }
 
 .filter-container {
@@ -332,7 +333,7 @@ embed-pdf {
     padding: 30px 0;
 }
 
-/* Read Details Toggle Button */
+/* Toggle Button */
 .toggle-btn {
     background: transparent;
     border: 1px solid var(--border-color, #eeeeee);
@@ -351,13 +352,20 @@ embed-pdf {
     color: var(--bg-color);
 }
 
-/* Full Details Content (Expands inside .card-footer cleanly) */
+/* OVERLAY EXPANSION: Floats text below button without expanding grid row height or shifting adjacent cards */
 .full-details {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-color);
     line-height: 1.6;
     font-size: 0.9rem;
     margin-top: 10px;
     border-top: 1px solid var(--border-color);
     padding-top: 10px;
+    z-index: 10;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
 footer {
@@ -470,7 +478,7 @@ footer {
 
     .portfolio-grid {
         grid-template-columns: 1fr;
-        gap: 15px;
+        gap: 25px;
     }
 
     .image-container,
@@ -483,5 +491,10 @@ footer {
         padding: 10px 14px;
         font-size: 0.85rem;
         min-height: 44px;
+    }
+    
+    .full-details {
+        position: relative; /* Render inline on single-column mobile */
+        box-shadow: none;
     }
 }
