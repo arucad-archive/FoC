@@ -126,7 +126,7 @@ nav a:hover {
     display: inline-block;
 }
 
-/* Portfolio Grid: Top aligned to prevent grid rows from forcing neighbor cards down */
+/* Portfolio Grid */
 .portfolio-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -142,12 +142,12 @@ nav a:hover {
     color: var(--text-color);
     display: flex;
     flex-direction: column;
-    min-height: 400px;  /* Equalizes card track height so unexpanded buttons sit on identical line */
+    min-height: 420px;  /* Equalizes unexpanded card height across rows */
     height: auto;
     position: relative;
 }
 
-/* Card Content Container: Takes available space to push technique & button to bottom */
+/* Card Content Container */
 .card-content {
     display: flex;
     flex-direction: column;
@@ -278,12 +278,14 @@ embed-pdf {
     font-size: 1.2rem;
     font-weight: 500;
     margin-bottom: 8px;
-    flex-grow: 1; /* Absorbs title height differences to push technique label down */
+    flex-grow: 0;
 }
 
+/* Technique string anchored to the bottom right above the button */
 .excerpt {
     font-size: 0.9rem;
     color: var(--muted-color);
+    margin-top: auto;   /* Locks technique label above the button */
     margin-bottom: 12px;
 }
 
@@ -344,7 +346,7 @@ embed-pdf {
     border: 1px solid var(--border-color, #eeeeee);
     color: var(--text-color, #111111);
     padding: 8px 16px;
-    margin-top: auto; /* Always locks to the bottom edge of the card */
+    margin-top: 0;
     font-size: 0.85rem;
     cursor: pointer;
     border-radius: 4px;
