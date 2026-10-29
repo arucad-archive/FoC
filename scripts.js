@@ -1,443 +1,500 @@
-const username = "arucad-archive";
-const repo = "FoC";
-
-let allProjects = [];     
-let filteredProjects = []; 
-let visibleCount = 0;     
-let isLoading = false; // Guard flag to prevent duplicate batch triggers
-
-const INITIAL_LOAD = 9;   // Preloaded works count
-const BATCH_LOAD = 3;     // Batch count on scroll
-
-let observer = null; 
-
-// Helper function to turn titles into clean Fancybox group names (e.g., "Templos Zeytinlik" -> "templos-zeytinlik")
-function slugify(text) {
-    if (!text) return "project";
-    return text
-        .toString()
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, '-')           // Replace spaces with -
-        .replace(/[^\w\-]+/g, '')       // Remove non-word chars
-        .replace(/\-\-+/g, '-');        // Replace multiple - with single -
+:root {
+    --bg-color: #FEFEFA; 
+    --text-color: #484d51;
+    --muted-color: #666666;
+    --border-color: #494C50;
+    --pdf-color: #f4f4f4;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    setupIntersectionObserver();
-    fetchProjects();
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 0 20px 40px 20px;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Sticky Header */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 40px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.site-title {
+    font-size: 1.8rem !important;
+    font-weight: bold;
+    color: var(--text-color);
+    line-height: 1.2;
+}
+
+.site-logo {
+    height: 52px;
+    width: auto;
+    display: block;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.social-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.social-links a:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+.social-links img {
+    width: 20px;
+    height: auto;
+    display: block;
+}
+
+nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 0.95rem;
+}
+
+nav a:hover {
+    color: var(--text-color);
+}
+
+.intro {
+    max-width: 800px;
+    font-size: 1.25rem;
+    color: var(--muted-color);
+    margin-bottom: 50px;
+}
+
+.section-nav-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-color);
+    margin-top: 40px;
+    margin-bottom: 25px;
+    display: inline-block;
+}
+
+/* Portfolio Grid: Stretch cards per row to match equal height */
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 60px 30px; /* Gap accommodates overlay expansion space */
+    align-items: stretch; /* Forces equal height across row cells */
+    position: relative;
+    z-index: 1;
+}
+
+/* Project Card Flex Container */
+.project-card {
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Fills row cell completely */
+    position: relative; /* Anchor for absolute full-details overlay */
+}
+
+/* TOP CONTENT AREA: Takes up available space to push technique string down */
+.card-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Pushes technique label (.excerpt) to the bottom edge */
+}
+
+/* Shared fixed-size media containers */
+.image-container,
+.video-container,
+.pdf-container {
+    width: 100%;
+    height: 240px !important;
+    background-color: var(--pdf-color);
+    margin-bottom: 15px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.2s ease;
+}
+
+.project-card:hover img {
+    opacity: 0.85;
+}
+
+.pdf-card-wrapper {
+    background: #2a2a2e;
+}
+
+.pdf-card-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    text-decoration: none;
+    color: #ffffff;
+    text-align: center;
+    transition: background 0.2s ease;
+}
+
+.pdf-card-link:hover {
+    background: #38383d;
+}
+
+.pdf-card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+}
+
+.pdf-card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+
+.pdf-card-btn {
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: #dddddd;
+}
+
+.video-container {
+    padding-bottom: 0 !important;
+    margin-top: 0;
+}
+
+.video-container iframe,
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    border: 0;
+    object-fit: cover;
+    aspect-ratio: 16 / 9;
+}
+
+.pdf-container iframe,
+.pdf-container embed-pdf,
+embed-pdf {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    border: none;
+}
+
+.pdf-link-btn {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    color: #0066cc;
+    text-decoration: underline;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.pdf-link-btn:hover {
+    color: #004499;
+}
+
+.meta {
+    font-size: 0.8rem;
+    color: var(--muted-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+}
+
+.project-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+/* Technique string: Locked to bottom edge so all labels align horizontally across the row */
+.excerpt {
+    font-size: 0.9rem;
+    color: var(--muted-color);
+    margin-top: auto; /* Aligns technique strings perfectly across cards in the row */
+    margin-bottom: 12px;
+}
+
+/* BOTTOM FOOTER CONTAINER: Holds toggle button and expanding overlay */
+.card-footer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+}
+
+.filter-container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.filter-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted-color, #666666);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: color 0.2s ease;
+    outline: none;
+}
+
+.filter-btn:hover {
+    color: var(--text-color, #111111);
+    font-weight: 700;
+}
+
+.filter-btn.active {
+    color: var(--text-color, #111111);
+    font-weight: 750;
+    border-bottom: 2px solid var(--text-color, #111111);
+    border-radius: 0;
+}
+
+.full-details a.project-link {
+    color: #0066cc;
+    text-decoration: underline;
+    word-break: break-word;
+    transition: color 0.2s ease;
+}
+
+.full-details a.project-link:hover {
+    color: #004499;
+}
+
+.loading-text {
+    color: var(--muted-color, #777777);
+    font-size: 0.95rem;
+    grid-column: 1 / -1;
+    padding: 30px 0;
+}
+
+/* Toggle Button */
+.toggle-btn {
+    background: transparent;
+    border: 1px solid var(--border-color, #eeeeee);
+    color: var(--text-color, #111111);
+    padding: 8px 16px;
+    margin-top: 0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.toggle-btn:hover {
+    background-color: var(--border-color, #111111);
+    color: var(--bg-color);
+}
+
+/* OVERLAY EXPANSION: Floats text below button without altering grid layout or moving neighboring cards */
+.full-details {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-color);
+    line-height: 1.6;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+    z-index: 10;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+footer {
+    margin-top: 80px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: var(--muted-color);
+    font-size: 0.85rem;
+}
+
+.badge-3d {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.fancybox-3d-wrapper {
+    width: 80vw;
+    height: 80vh;
+    max-width: 1000px;
+    max-height: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fancybox-3d-wrapper model-viewer {
+    width: 100%;
+    height: 100%;
+    background-color: #f8f9fa;
+    display: block;
+}
+
+.fancybox__container {
+    z-index: 999999 !important;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
     
-    // Bind Fancybox 5 with isolated items and disabled navigation arrows
-    if (typeof Fancybox !== "undefined") {
-        Fancybox.bind("[data-fancybox]", {
-            infinite: false,
-            Navigation: false,
-            iframe: {
-                preload: false,
-                attr: {
-                    scrolling: "auto"
-                }
-            },
-            Carousel: {
-                Panzoom: {
-                    touch: (panzoom, event) => {
-                        return event?.target.nodeName === "MODEL-VIEWER" ? false : true;
-                    }
-                }
-            },
-            on: {
-                done: (fancybox, slide) => {
-                    const viewer = slide.el.querySelector("model-viewer");
-                    if (viewer && typeof viewer.dismissPoster === "function") {
-                        viewer.dismissPoster();
-                    }
-                }
-            }
-        });
+    header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;                     
+        background-color: var(--bg-color) !important; 
+        opacity: 1 !important;                 
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+    } 
+
+    header *,
+    .brand, 
+    .header-right, 
+    .filter-container {
+        background-color: var(--bg-color) !important;
+    } 
+
+    .brand {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
     }
-});
 
-function fetchProjects() {
-    console.log("Fetching projects from GitHub...");
+    .header-right {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 15px;
+    }
 
-    const projectsFolder = `https://api.github.com/repos/${username}/${repo}/contents/content/projects`;
-    const finalsFolder   = `https://api.github.com/repos/${username}/${repo}/contents/content/finals`;
+    .filter-container {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
 
-    Promise.allSettled([
-        fetch(projectsFolder).then(res => res.ok ? res.json() : []),
-        fetch(finalsFolder).then(res => res.ok ? res.json() : [])
-    ])
-    .then(results => {
-        const files1 = results[0].status === 'fulfilled' && Array.isArray(results[0].value) ? results[0].value : [];
-        const files2 = results[1].status === 'fulfilled' && Array.isArray(results[1].value) ? results[1].value : [];
-        
-        const allFiles = [...files1, ...files2];
-        const mdFiles = allFiles.filter(f => f.name && f.name.endsWith('.md'));
+    .social-links {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 16px;
+        margin-top: 5px;
+    }
 
-        if (mdFiles.length === 0) {
-            renderMessage("No published projects found.");
-            return [];
-        }
-
-        const fetchPromises = mdFiles.map(file =>
-            fetch(file.download_url)
-                .then(res => res.text())
-                .then(text => parseMarkdownFrontMatter(text))
-                .catch(err => {
-                    console.error("Failed to load project file:", err);
-                    return null;
-                })
-        );
-
-        return Promise.all(fetchPromises);
-    })
-    .then(projects => {
-        if (projects) {
-            const validProjects = projects.filter(p => p !== null);
-            allProjects = validProjects.sort((a, b) => {
-                const dateA = a.rawDate ? new Date(a.rawDate) : 0;
-                const dateB = b.rawDate ? new Date(b.rawDate) : 0;
-                return dateB - dateA;
-            });
-            filteredProjects = [...allProjects];
-            resetAndRender();
-        }
-    })
-    .catch(err => {
-        console.error("Error loading projects:", err);
-        renderMessage(`Error loading projects: ${err.message}`);
-    });
-}
-
-function parseMarkdownFrontMatter(text) {
-    const getField = (field) => {
-        const regex = new RegExp(`${field}:\\s*["']?(.*?)["']?\\s*$`, 'm');
-        const match = text.match(regex);
-        return match ? match[1].trim() : "";
-    };
-
-    const parts = text.split('---');
-    let bodyContent = parts.length >= 3 ? parts.slice(2).join('---').trim() : "";
-
-    const baseUrl = `https://${username.toLowerCase()}.github.io/${repo}`;
-
-    const formatAssetPath = (path) => {
-        if (!path) return "";
-        let cleanPath = path.startsWith('/') ? path.substring(1) : path;
-        return cleanPath.startsWith('http') ? cleanPath : `${baseUrl}/${cleanPath}`;
-    };
-
-    const imagePath = formatAssetPath(getField("image"));
-    const pdfPath = formatAssetPath(getField("pdf"));
-    const pdfCoverPath = formatAssetPath(getField("pdf_cover"));
-    const model3dPath = formatAssetPath(getField("model_3d"));
-    const modelCoverPath = formatAssetPath(getField("model_cover"));
-    const interactiveUrl = formatAssetPath(getField("interactive_url"));
-    const interactiveCoverPath = formatAssetPath(getField("interactive_cover"));
-
-    const rawDate = getField("date");
-    const yearOnly = rawDate ? rawDate.substring(0, 4) : "";
+    .site-title {
+        font-size: 1.3rem !important;
+        white-space: normal;
+    }
     
-    return {
-        title: getField("title") || "Untitled Project",
-        author: getField("author") || "",
-        rawDate: rawDate,
-        date: yearOnly,
-        category: getField("category") || "Uncategorized",
-        finalsType: getField("finals_type") || "",
-        image: imagePath,
-        video: getField("video") || "",
-        pdf: pdfPath,
-        pdfCover: pdfCoverPath,
-        model3d: model3dPath,
-        modelCover: modelCoverPath,
-        interactiveUrl: interactiveUrl,
-        interactiveCover: interactiveCoverPath,
-        excerpt: getField("excerpt") || "",
-        body: bodyContent
-    };
-}
-
-function renderVideoEmbed(url) {
-    if (!url) return "";
-
-    const youtubeMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-    if (youtubeMatch) {
-        return `
-            <div class="video-container">
-                <iframe src="https://www.youtube-nocookie.com/embed/${youtubeMatch[1]}" 
-                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen></iframe>
-            </div>`;
+    .site-logo {
+        height: 40px;
     }
 
-    const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?([0-9]+)/);
-    if (vimeoMatch) {
-        return `
-            <div class="video-container">
-                <iframe src="https://player.vimeo.com/video/${vimeoMatch[1]}" 
-                        frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>`;
+    .portfolio-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
     }
 
-    if (url.match(/\.(mp4|webm|ogg)$/i)) {
-        return `
-            <div class="video-container">
-                <video controls preload="metadata" style="width:100%; height:100%; border-radius:4px; object-fit: cover;">
-                    <source src="${url}">
-                    Your browser does not support HTML5 video.
-                </video>
-            </div>`;
+    .image-container,
+    .video-container,
+    .pdf-container {
+        height: 200px !important;
     }
 
-    return "";
-}
-
-function renderPdfThumbnail(pdfUrl, coverImgUrl, title, index) {
-    if (!pdfUrl) return "";
-
-    const projectSlug = slugify(title);
-
-    if (coverImgUrl) {
-        return `
-            <div class="image-container">
-                <a href="${pdfUrl}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${title}">
-                    <img src="${coverImgUrl}" alt="${title}" loading="lazy">
-                    <span class="badge-3d" style="background: rgba(0, 102, 204, 0.85);">📄 View PDF</span>
-                </a>
-            </div>`;
+    .toggle-btn {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        min-height: 44px;
     }
-
-    return `
-        <div class="image-container pdf-card-wrapper">
-            <a href="${pdfUrl}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${title}" class="pdf-card-link">
-                <div class="pdf-card-icon">📄</div>
-                <div class="pdf-card-title">${title}</div>
-                <span class="pdf-card-btn">Click to View Document</span>
-            </a>
-        </div>`;
-}
-
-function render3DModelCard(modelUrl, coverImgUrl, title, index) {
-    if (!modelUrl) return "";
-
-    const previewImage = coverImgUrl || 'images/default-3d-cover.png';
-    const projectSlug = slugify(title);
-
-    const modelHTML = `
-        <div class="fancybox-3d-wrapper">
-            <model-viewer src="${modelUrl}" alt="${title}" camera-controls auto-rotate shadow-intensity="1" bounds="tight" style="width:100%; height:100%;"></model-viewer>
-        </div>`;
-
-    return `
-        <div class="image-container">
-            <a href="javascript:;" data-fancybox="${projectSlug}" data-type="html" data-src='${modelHTML}' data-caption="${title}">
-                <img src="${previewImage}" alt="${title}" loading="lazy">
-                <span class="badge-3d">📦 3D Model</span>
-            </a>
-        </div>`;
-}
-
-function renderInteractiveCard(interactiveUrl, coverImgUrl, title) {
-    if (!interactiveUrl) return "";
-
-    const previewImage = coverImgUrl || 'images/default-interactive-cover.png';
-
-    return `
-        <div class="image-container">
-            <a href="${interactiveUrl}" target="_blank" rel="noopener noreferrer" 
-               data-caption="${title}"
-               data-umami-event="Play Interactive Web Game"
-               data-umami-event-title="${title}">
-                <img src="${previewImage}" alt="${title}" loading="lazy">
-                <span class="badge-interactive">🌐 Interactive Web</span>
-            </a>
-        </div>`;
-}
-
-function resetAndRender() {
-    const grid = document.getElementById('portfolio-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    visibleCount = 0;
-
-    if (filteredProjects.length === 0) {
-        renderMessage("No projects in this category.");
-        return;
-    }
-
-    loadMoreProjects(INITIAL_LOAD);
-}
-
-function loadMoreProjects(countToLoad) {
-    if (isLoading) return;
-    isLoading = true;
-
-    const grid = document.getElementById('portfolio-grid');
-    if (!grid) {
-        isLoading = false;
-        return;
-    }
-
-    const nextBatch = filteredProjects.slice(visibleCount, visibleCount + countToLoad);
-
-    nextBatch.forEach((project) => {
-        const index = visibleCount;
-        const projectSlug = slugify(project.title);
-        const card = document.createElement('div');
-        card.className = 'project-card';
-        
-        const metaParts = [];
-        if (project.author) metaParts.push(project.author);
-
-        if (project.category === "Finals" && project.finalsType) {
-            metaParts.push(`Finals (${project.finalsType})`);
-        } else if (project.category) {
-            metaParts.push(project.category);
-        }
-
-        if (project.date) metaParts.push(project.date);
-        const metaText = metaParts.join(" • ");
-
-        let mediaHTML = "";
-        if (project.interactiveUrl) {
-            mediaHTML = renderInteractiveCard(project.interactiveUrl, project.interactiveCover || project.image, project.title);
-        } else if (project.model3d) {
-            mediaHTML = render3DModelCard(project.model3d, project.modelCover || project.image, project.title, index);
-        } else if (project.video) {
-            mediaHTML = renderVideoEmbed(project.video);
-        } else if (project.image) {
-            mediaHTML = `
-                <div class="image-container">
-                    <a href="${project.image}" data-fancybox="${projectSlug}" data-caption="${project.title}">
-                        <img src="${project.image}" alt="${project.title}" loading="lazy">
-                    </a>
-                </div>`;
-        } else if (project.pdf) {
-            mediaHTML = renderPdfThumbnail(project.pdf, project.pdfCover, project.title, index);
-        }
-
-        /* SEPARATED CONTAINERS FIX:
-           1. .card-content holds top text & anchors technique (.excerpt) at the bottom
-           2. .card-footer holds button & expanding body so it NEVER shifts .excerpt upwards
-        */
-        card.innerHTML = `
-            ${mediaHTML}
-            
-            <div class="card-content">
-                <div class="meta">${metaText}</div>
-                <h2 class="project-title">${project.title}</h2>
-                ${project.excerpt ? `<p class="excerpt">${project.excerpt}</p>` : ''}
-            </div>
-
-            <div class="card-footer">
-                ${project.pdf && (project.image || project.video || project.model3d || project.interactiveUrl) ? `
-                    <a href="${project.pdf}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${project.title}" 
-                       data-umami-event="View Attached PDF" 
-                       data-umami-event-title="${project.title}" 
-                       class="pdf-link-btn">📄 View Attached PDF</a>
-                ` : ''}
-                
-                ${project.body ? `
-                    <button class="toggle-btn" onclick="toggleDetails(${index})">Read Full Details</button>
-                    <div id="details-${index}" class="full-details" style="display: none;">
-                        ${formatMarkdownBody(project.body)}
-                    </div>
-                ` : ''}
-            </div>
-        `;
-        grid.appendChild(card);
-        visibleCount++;
-    });
-
-    isLoading = false;
-    updateSentinel();
-}
-
-function setupIntersectionObserver() {
-    if ('IntersectionObserver' in window) {
-        observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && visibleCount < filteredProjects.length && !isLoading) {
-                    loadMoreProjects(BATCH_LOAD);
-                }
-            });
-        }, {
-            rootMargin: '50px'
-        });
-    }
-}
-
-function updateSentinel() {
-    let sentinel = document.getElementById('scroll-sentinel');
-    if (sentinel) {
-        if (observer) observer.unobserve(sentinel);
-        sentinel.remove();
-    }
-
-    if (visibleCount < filteredProjects.length) {
-        sentinel = document.createElement('div');
-        sentinel.id = 'scroll-sentinel';
-        sentinel.style.height = '20px';
-        sentinel.style.width = '100%';
-        sentinel.style.clear = 'both';
-
-        const grid = document.getElementById('portfolio-grid');
-        if (grid && grid.parentNode) {
-            grid.parentNode.insertBefore(sentinel, grid.nextSibling);
-            if (observer) observer.observe(sentinel);
-        }
-    }
-}
-
-function toggleDetails(index) {
-    const detailsDiv = document.getElementById(`details-${index}`);
-    if (!detailsDiv) return;
-    const btn = detailsDiv.previousElementSibling;
     
-    if (detailsDiv.style.display === "none") {
-        detailsDiv.style.display = "block";
-        btn.innerText = "Hide Details";
-    } else {
-        detailsDiv.style.display = "none";
-        btn.innerText = "Read Full Details";
-    }
-}
-
-function formatMarkdownBody(bodyText) {
-    if (!bodyText) return "";
-
-    return bodyText
-        .replace(/\[([^\]]+)\]\((https?:\r?\n?[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="project-link">$1</a>')
-        .replace(/(^|[^"'])((https?:\/\/[^\s<]+))/g, '$1<a href="$2" target="_blank" rel="noopener noreferrer" class="project-link">$2</a>')
-        .replace(/\n\n/g, '<br><br>')
-        .replace(/\n/g, '<br>');
-}
-
-function filterProjects(category, btnElement) {
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    if (btnElement) btnElement.classList.add('active');
-
-    const catUpper = category.toUpperCase();
-
-    if (catUpper === 'ALL') {
-        filteredProjects = [...allProjects];
-    } else if (catUpper === 'FINALS') {
-        filteredProjects = allProjects.filter(p => p.category.toUpperCase() === 'FINALS');
-    } else {
-        filteredProjects = allProjects.filter(p => {
-            const mainCatMatches = p.category.toUpperCase().includes(catUpper);
-            const finalsSubMatches = p.category.toUpperCase() === 'FINALS' && p.finalsType.toUpperCase() === catUpper;
-            return mainCatMatches || finalsSubMatches;
-        });
-    }
-
-    resetAndRender();
-}
-
-function renderMessage(message) {
-    const grid = document.getElementById('portfolio-grid');
-    if (grid) {
-        grid.innerHTML = `<p class="loading-text">${message}</p>`;
+    .full-details {
+        position: relative; /* Single-column mobile layout expands inline */
+        box-shadow: none;
     }
 }
