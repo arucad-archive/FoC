@@ -4,30 +4,28 @@ const repo = "FoC";
 let allProjects = [];     
 let filteredProjects = []; 
 let visibleCount = 0;     
-let isLoading = false; // Guard flag to prevent duplicate batch triggers
+let isLoading = false; 
 
-const INITIAL_LOAD = 9;   // Preloaded works count
-const BATCH_LOAD = 3;     // Batch count on scroll
+const INITIAL_LOAD = 9;   
+const BATCH_LOAD =     3;     
 
 let observer = null; 
 
-// Helper function to turn titles into clean Fancybox group names (e.g., "Templos Zeytinlik" -> "templos-zeytinlik")
 function slugify(text) {
     if (!text) return "project";
     return text
         .toString()
         .toLowerCase()
         .trim()
-        .replace(/\s+/g, '-')           // Replace spaces with -
-        .replace(/[^\w\-]+/g, '')       // Remove non-word chars
-        .replace(/\-\-+/g, '-');        // Replace multiple - with single -
+        .replace(/\s+/g, '-')           
+        .replace(/[^\w\-]+/g, '')       
+        .replace(/\-\-+/g, '-');        
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     setupIntersectionObserver();
     fetchProjects();
     
-    // Bind Fancybox 5 with isolated items and disabled navigation arrows
     if (typeof Fancybox !== "undefined") {
         Fancybox.bind("[data-fancybox]", {
             infinite: false,
@@ -395,17 +393,20 @@ function toggleDetails(index) {
     const grid = document.getElementById('portfolio-grid');
     const isExpanded = card.dataset.expanded === "true";
 
-    // Close any other open details first across the grid
+    // Close any other open details first across the grid and restore them
     document.querySelectorAll('.expanded-row-wrapper').forEach(wrapper => {
         const innerDetails = wrapper.querySelector('.full-details');
         if (innerDetails) {
             innerDetails.style.display = "none";
             const originalCardId = wrapper.dataset.targetCardId;
             if (originalCardId) {
-                const originalCard = document.getElementById(`details-${originalCardId}`).closest('.project-card');
-                if (originalCard) {
-                    originalCard.querySelector('.card-footer').appendChild(innerDetails);
-                    originalCard.dataset.expanded = "false";
+                const targetEl = document.getElementById(`details-${originalCardId}`);
+                if (targetEl) {
+                    const originalCard = targetEl.closest('.project-card');
+                    if (originalCard) {
+                        originalCard.querySelector('.card-footer').appendChild(innerDetails);
+                        originalCard.dataset.expanded = "false";
+                    }
                 }
             }
         }
@@ -422,15 +423,15 @@ function toggleDetails(index) {
         detailsDiv.style.display = "block";
         wrapper.appendChild(detailsDiv);
 
-        // Calculate grid columns to find the end of the current row so the other 2 cards stay visible on the same line
-        const cards = Array.from(grid.querySelectorAll('.project-card'));
-        const cardIndex = cards.indexOf(card);
+        // Find the correct row end to insert the expansion wrapper beneath it
+        const gridItems = Array.from(grid.children).filter(el => el.classList.contains('project-card'));
+        const cardIndex = gridItems.indexOf(card);
         const computedStyle = window.getComputedStyle(grid);
         const columnsCount = computedStyle.getPropertyValue('grid-template-columns').split(' ').length;
         
         const rowIndex = Math.floor(cardIndex / columnsCount);
-        const lastCardInRowIndex = Math.min((rowIndex + 1) * columnsCount - 1, cards.length - 1);
-        const targetCardInDom = cards[lastCardInRowIndex];
+        const lastCardInRowIndex = Math.min((rowIndex + 1) * columnsCount - 1, gridItems.length - 1);
+        const targetCardInDom = gridItems[lastCardInRowIndex];
 
         targetCardInDom.parentNode.insertBefore(wrapper, targetCardInDom.nextSibling);
 
