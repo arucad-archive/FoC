@@ -4,28 +4,30 @@ const repo = "FoC";
 let allProjects = [];     
 let filteredProjects = []; 
 let visibleCount = 0;     
-let isLoading = false; 
+let isLoading = false; // Guard flag to prevent duplicate batch triggers
 
-const INITIAL_LOAD = 9;   
-const BATCH_LOAD = 3;     
+const INITIAL_LOAD = 9;   // Preloaded works count
+const BATCH_LOAD = 3;     // Batch count on scroll
 
 let observer = null; 
 
+// Helper function to turn titles into clean Fancybox group names (e.g., "Templos Zeytinlik" -> "templos-zeytinlik")
 function slugify(text) {
     if (!text) return "project";
     return text
         .toString()
         .toLowerCase()
         .trim()
-        .replace(/\s+/g, '-')           
-        .replace(/[^\w\-]+/g, '')       
-        .replace(/\-\-+/g, '-');        
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove non-word chars
+        .replace(/\-\-+/g, '-');        // Replace multiple - with single -
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     setupIntersectionObserver();
     fetchProjects();
     
+    // Bind Fancybox 5 with isolated items and disabled navigation arrows
     if (typeof Fancybox !== "undefined") {
         Fancybox.bind("[data-fancybox]", {
             infinite: false,
@@ -36,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     scrolling: "auto"
                 }
             },
+            // Prevents the lightbox container from panning/moving when dragging the 3D model
             Carousel: {
                 Panzoom: {
                     touch: (panzoom, event) => {
@@ -45,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             on: {
                 done: (fancybox, slide) => {
+                    // Forces model-viewer to re-evaluate dimensions once lightbox transition completes
                     const viewer = slide.el.querySelector("model-viewer");
                     if (viewer && typeof viewer.dismissPoster === "function") {
                         viewer.dismissPoster();
@@ -117,6 +121,7 @@ function parseMarkdownFrontMatter(text) {
     const parts = text.split('---');
     let bodyContent = parts.length >= 3 ? parts.slice(2).join('---').trim() : "";
 
+    // Dynamic Base URL resolving from username & repo parameters
     const baseUrl = `https://${username.toLowerCase()}.github.io/${repo}`;
 
     const formatAssetPath = (path) => {
@@ -156,16 +161,25 @@ function parseMarkdownFrontMatter(text) {
     };
 }
 
-function renderVideoEmbed(url) {
+/* Video Card Helper: Supports YouTube Lightbox & Direct Player Embeds with Umami Event Tracking */
+function renderVideoEmbed(url, coverImgUrl, title, projectSlug) {
     if (!url) return "";
 
     const youtubeMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+    
     if (youtubeMatch) {
+        const videoId = youtubeMatch[1];
+        const previewImage = coverImgUrl || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
+
         return `
-            <div class="video-container">
-                <iframe src="https://www.youtube-nocookie.com/embed/${youtubeMatch[1]}" 
-                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen></iframe>
+            <div class="image-container">
+                <a href="${embedUrl}" data-fancybox="${projectSlug}" data-type="iframe" data-caption="${title}"
+                   data-umami-event="Play YouTube Video"
+                   data-umami-event-title="${title}">
+                    <img src="${previewImage}" alt="${title}" loading="lazy">
+                    <span class="badge-3d" style="background: rgba(204, 0, 0, 0.85);">▶ Play Video</span>
+                </a>
             </div>`;
     }
 
@@ -191,6 +205,7 @@ function renderVideoEmbed(url) {
     return "";
 }
 
+/* Render PDF Card for Grid and Launch Fancybox Lightbox on Click */
 function renderPdfThumbnail(pdfUrl, coverImgUrl, title, index) {
     if (!pdfUrl) return "";
 
@@ -199,7 +214,9 @@ function renderPdfThumbnail(pdfUrl, coverImgUrl, title, index) {
     if (coverImgUrl) {
         return `
             <div class="image-container">
-                <a href="${pdfUrl}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${title}">
+                <a href="${pdfUrl}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${title}"
+                   data-umami-event="View PDF Document"
+                   data-umami-event-title="${title}">
                     <img src="${coverImgUrl}" alt="${title}" loading="lazy">
                     <span class="badge-3d" style="background: rgba(0, 102, 204, 0.85);">📄 View PDF</span>
                 </a>
@@ -208,7 +225,9 @@ function renderPdfThumbnail(pdfUrl, coverImgUrl, title, index) {
 
     return `
         <div class="image-container pdf-card-wrapper">
-            <a href="${pdfUrl}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${title}" class="pdf-card-link">
+            <a href="${pdfUrl}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${title}" class="pdf-card-link"
+               data-umami-event="View PDF Document"
+               data-umami-event-title="${title}">
                 <div class="pdf-card-icon">📄</div>
                 <div class="pdf-card-title">${title}</div>
                 <span class="pdf-card-btn">Click to View Document</span>
@@ -229,7 +248,9 @@ function render3DModelCard(modelUrl, coverImgUrl, title, index) {
 
     return `
         <div class="image-container">
-            <a href="javascript:;" data-fancybox="${projectSlug}" data-type="html" data-src='${modelHTML}' data-caption="${title}">
+            <a href="javascript:;" data-fancybox="${projectSlug}" data-type="html" data-src='${modelHTML}' data-caption="${title}"
+               data-umami-event="View 3D Model"
+               data-umami-event-title="${title}">
                 <img src="${previewImage}" alt="${title}" loading="lazy">
                 <span class="badge-3d">📦 3D Model</span>
             </a>
@@ -298,12 +319,13 @@ function loadMoreProjects(countToLoad) {
         const metaText = metaParts.join(" • ");
 
         let mediaHTML = "";
+        // Priority order: Interactive Web > 3D Model > Video > Image > PDF
         if (project.interactiveUrl) {
             mediaHTML = renderInteractiveCard(project.interactiveUrl, project.interactiveCover || project.image, project.title);
         } else if (project.model3d) {
             mediaHTML = render3DModelCard(project.model3d, project.modelCover || project.image, project.title, index);
         } else if (project.video) {
-            mediaHTML = renderVideoEmbed(project.video);
+            mediaHTML = renderVideoEmbed(project.video, project.image, project.title, projectSlug);
         } else if (project.image) {
             mediaHTML = `
                 <div class="image-container">
@@ -324,21 +346,19 @@ function loadMoreProjects(countToLoad) {
                 ${project.excerpt ? `<p class="excerpt">${project.excerpt}</p>` : ''}
             </div>
 
-            <div class="card-footer">
-                ${project.pdf && (project.image || project.video || project.model3d || project.interactiveUrl) ? `
-                    <a href="${project.pdf}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${project.title}" 
-                       data-umami-event="View Attached PDF" 
-                       data-umami-event-title="${project.title}" 
-                       class="pdf-link-btn">📄 View Attached PDF</a>
-                ` : ''}
-                
-                ${project.body ? `
-                    <button class="toggle-btn" onclick="toggleDetails(${index})">Read Full Details</button>
-                    <div id="details-${index}" class="full-details" style="display: none;">
-                        ${formatMarkdownBody(project.body)}
-                    </div>
-                ` : ''}
-            </div>
+            ${project.pdf && (project.image || project.video || project.model3d || project.interactiveUrl) ? `
+                <a href="${project.pdf}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${project.title}" 
+                   data-umami-event="View Attached PDF" 
+                   data-umami-event-title="${project.title}" 
+                   class="pdf-link-btn">📄 View Attached PDF</a>
+            ` : ''}
+            
+            ${project.body ? `
+                <button class="toggle-btn" onclick="toggleDetails(${index})">Read Full Details</button>
+                <div id="details-${index}" class="full-details" style="display: none; margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
+                    ${formatMarkdownBody(project.body)}
+                </div>
+            ` : ''}
         `;
         grid.appendChild(card);
         visibleCount++;
@@ -388,37 +408,13 @@ function toggleDetails(index) {
     const detailsDiv = document.getElementById(`details-${index}`);
     if (!detailsDiv) return;
     const btn = detailsDiv.previousElementSibling;
-    const card = btn.closest('.project-card');
-    const cardFooter = card.querySelector('.card-footer');
-
-    const isExpanded = card.dataset.expanded === "true";
-
-    // Close all other open details across the grid first and restore them
-    document.querySelectorAll('.project-card').forEach(c => {
-        c.dataset.expanded = "false";
-        const wrapper = c.querySelector('.expanded-row-wrapper');
-        if (wrapper) wrapper.remove();
-        const innerDetails = c.querySelector('.full-details');
-        if (innerDetails) {
-            innerDetails.style.display = "none";
-            c.querySelector('.card-footer').appendChild(innerDetails);
-        }
-        const b = c.querySelector('.toggle-btn');
-        if (b) b.innerText = "Read Full Details";
-    });
-
-    if (!isExpanded) {
-        // Create an inline wrapper directly inside this card's footer
-        const wrapper = document.createElement('div');
-        wrapper.className = 'expanded-row-wrapper';
-        
+    
+    if (detailsDiv.style.display === "none") {
         detailsDiv.style.display = "block";
-        wrapper.appendChild(detailsDiv);
-
-        cardFooter.appendChild(wrapper);
-
-        card.dataset.expanded = "true";
         btn.innerText = "Hide Details";
+    } else {
+        detailsDiv.style.display = "none";
+        btn.innerText = "Read Full Details";
     }
 }
 
@@ -449,6 +445,7 @@ function filterProjects(category, btnElement) {
             return mainCatMatches || finalsSubMatches;
         });
     }
+
     resetAndRender();
 }
 
