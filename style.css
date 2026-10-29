@@ -126,30 +126,32 @@ nav a:hover {
     display: inline-block;
 }
 
-/* Portfolio Grid */
+/* Portfolio Grid: Top aligned to prevent grid rows from forcing neighbor cards down */
 .portfolio-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 40px 30px;
-    align-items: stretch; /* Stretches cards per row to uniform height */
+    align-items: start; /* Prevents adjacent grid cards from moving when details open */
     position: relative;
     z-index: 1;
 }
 
-/* Project Card Flex Layout */
+/* Project Card Container */
 .project-card {
     text-decoration: none;
     color: var(--text-color);
     display: flex;
     flex-direction: column;
-    height: 100% !important; /* Fills full row height */
+    min-height: 400px;  /* Equalizes card track height so unexpanded buttons sit on identical line */
+    height: auto;
+    position: relative;
 }
 
-/* Card Content Container */
+/* Card Content Container: Takes available space to push technique & button to bottom */
 .card-content {
     display: flex;
     flex-direction: column;
-    flex-grow: 1; /* Absorbs row height to push technique label & button down */
+    flex-grow: 1;
 }
 
 /* Shared fixed-size media containers */
@@ -276,7 +278,7 @@ embed-pdf {
     font-size: 1.2rem;
     font-weight: 500;
     margin-bottom: 8px;
-    flex-grow: 1; /* Pushes technique string and button down evenly */
+    flex-grow: 1; /* Absorbs title height differences to push technique label down */
 }
 
 .excerpt {
@@ -342,7 +344,7 @@ embed-pdf {
     border: 1px solid var(--border-color, #eeeeee);
     color: var(--text-color, #111111);
     padding: 8px 16px;
-    margin-top: 0;
+    margin-top: auto; /* Always locks to the bottom edge of the card */
     font-size: 0.85rem;
     cursor: pointer;
     border-radius: 4px;
@@ -359,6 +361,8 @@ embed-pdf {
     line-height: 1.6;
     font-size: 0.9rem;
     margin-top: 10px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
 }
 
 /* Footer Section */
