@@ -120,12 +120,12 @@ nav a:hover {
     display: inline-block;
 }
 
-/* Portfolio Grid: Stretch cards in each row to match equal height */
+/* Portfolio Grid */
 .portfolio-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 40px 30px;
-    align-items: stretch; /* Forces equal height across row cells */
+    align-items: stretch;
     position: relative;
     z-index: 1;
 }
@@ -136,17 +136,15 @@ nav a:hover {
     color: var(--text-color);
     display: flex;
     flex-direction: column;
-    height: 100%; /* Fills row cell completely */
+    height: 100%;
 }
 
-/* TOP CONTENT AREA: Takes up available space to push technique string down */
 .card-content {
     display: flex;
     flex-direction: column;
-    flex-grow: 1; /* Pushes technique label (.excerpt) to the bottom edge */
+    flex-grow: 1;
 }
 
-/* Shared fixed-size media containers */
 .image-container,
 .video-container,
 .pdf-container {
@@ -231,15 +229,6 @@ nav a:hover {
     aspect-ratio: 16 / 9;
 }
 
-.pdf-container iframe,
-.pdf-container embed-pdf,
-embed-pdf {
-    display: block;
-    width: 100% !important;
-    height: 100% !important;
-    border: none;
-}
-
 .pdf-link-btn {
     display: inline-block;
     margin-bottom: 10px;
@@ -268,15 +257,13 @@ embed-pdf {
     margin-bottom: 8px;
 }
 
-/* Technique string: Locked to the bottom edge of .card-content so all labels align horizontally */
 .excerpt {
     font-size: 0.9rem;
     color: var(--muted-color);
-    margin-top: auto; /* Aligns technique strings perfectly across cards in the row */
+    margin-top: auto;
     margin-bottom: 12px;
 }
 
-/* BOTTOM FOOTER CONTAINER: Holds toggle button */
 .card-footer {
     display: flex;
     flex-direction: column;
@@ -331,7 +318,6 @@ embed-pdf {
     padding: 30px 0;
 }
 
-/* Toggle Button */
 .toggle-btn {
     background: transparent;
     border: 1px solid var(--border-color, #eeeeee);
@@ -343,6 +329,8 @@ embed-pdf {
     border-radius: 4px;
     transition: all 0.2s ease;
     width: 100%;
+    position: relative;
+    z-index: 5;
 }
 
 .toggle-btn:hover {
@@ -350,13 +338,13 @@ embed-pdf {
     color: var(--bg-color);
 }
 
-/* FULL-WIDTH INLINE EXPANSION WRAPPER: Pushes lower grid posts down smoothly */
+/* Row wrapper that spans the entire row width cleanly */
 .expanded-row-wrapper {
-    grid-column: 1 / -1; /* Spans across all columns of the grid */
+    grid-column: 1 / -1;
     background-color: var(--bg-color);
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
-    padding: 24px 0;
+    padding: 24px 20px;
     margin: 15px 0;
     width: 100%;
 }
@@ -364,7 +352,6 @@ embed-pdf {
 .expanded-row-wrapper .full-details {
     max-width: 900px;
     margin: 0 auto;
-    padding: 0 20px;
     line-height: 1.6;
     font-size: 0.95rem;
 }
@@ -431,66 +418,8 @@ footer {
         border-bottom: 1px solid var(--border-color);
     } 
 
-    header *,
-    .brand, 
-    .header-right, 
-    .filter-container {
-        background-color: var(--bg-color) !important;
-    } 
-
-    .brand {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .header-right {
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        gap: 15px;
-    }
-
-    .filter-container {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-
-    .social-links {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        gap: 16px;
-        margin-top: 5px;
-    }
-
-    .site-title {
-        font-size: 1.3rem !important;
-        white-space: normal;
-    }
-    
-    .site-logo {
-        height: 40px;
-    }
-
     .portfolio-grid {
         grid-template-columns: 1fr;
         gap: 25px;
-    }
-
-    .image-container,
-    .video-container,
-    .pdf-container {
-        height: 200px !important;
-    }
-
-    .toggle-btn {
-        padding: 10px 14px;
-        font-size: 0.85rem;
-        min-height: 44px;
     }
 }
