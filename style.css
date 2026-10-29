@@ -124,7 +124,7 @@ nav a:hover {
 .portfolio-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 60px 30px; /* Extra row gap accommodates absolute expanded text */
+    gap: 40px 30px;
     align-items: stretch; /* Forces equal height across row cells */
     position: relative;
     z-index: 1;
@@ -137,7 +137,6 @@ nav a:hover {
     display: flex;
     flex-direction: column;
     height: 100%; /* Fills row cell completely */
-    position: relative; /* Anchor for absolute full-details overlay */
 }
 
 /* TOP CONTENT AREA: Takes up available space to push technique string down */
@@ -273,16 +272,15 @@ embed-pdf {
 .excerpt {
     font-size: 0.9rem;
     color: var(--muted-color);
-    margin-top: auto; /* Aligns "Unity, Blender", "GoDot", "Blender" perfectly across the row */
+    margin-top: auto; /* Aligns technique strings perfectly across cards in the row */
     margin-bottom: 12px;
 }
 
-/* BOTTOM FOOTER CONTAINER: Holds toggle button and expanding overlay */
+/* BOTTOM FOOTER CONTAINER: Holds toggle button */
 .card-footer {
     display: flex;
     flex-direction: column;
     width: 100%;
-    position: relative;
 }
 
 .filter-container {
@@ -352,20 +350,23 @@ embed-pdf {
     color: var(--bg-color);
 }
 
-/* OVERLAY EXPANSION: Floats text below button without expanding grid row height or shifting adjacent cards */
-.full-details {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
+/* FULL-WIDTH INLINE EXPANSION WRAPPER: Pushes lower grid posts down smoothly */
+.expanded-row-wrapper {
+    grid-column: 1 / -1; /* Spans across all columns of the grid */
     background-color: var(--bg-color);
-    line-height: 1.6;
-    font-size: 0.9rem;
-    margin-top: 10px;
     border-top: 1px solid var(--border-color);
-    padding-top: 10px;
-    z-index: 10;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border-bottom: 1px solid var(--border-color);
+    padding: 24px 0;
+    margin: 15px 0;
+    width: 100%;
+}
+
+.expanded-row-wrapper .full-details {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+    line-height: 1.6;
+    font-size: 0.95rem;
 }
 
 footer {
@@ -491,10 +492,5 @@ footer {
         padding: 10px 14px;
         font-size: 0.85rem;
         min-height: 44px;
-    }
-    
-    .full-details {
-        position: relative; /* Render inline on single-column mobile */
-        box-shadow: none;
     }
 }
