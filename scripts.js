@@ -392,18 +392,21 @@ function toggleDetails(index) {
     const btn = detailsDiv.previousElementSibling;
     const card = btn.closest('.project-card');
 
-    // Check if an inline expansion row already exists for this card
-    let existingWrapper = card.nextElementSibling;
-    const isExpanded = existingWrapper && existingWrapper.classList.contains('expanded-row-wrapper');
+    const grid = document.getElementById('portfolio-grid');
+    const isExpanded = card.dataset.expanded === "true";
 
     // Close any other open details first across the grid
     document.querySelectorAll('.expanded-row-wrapper').forEach(wrapper => {
         const innerDetails = wrapper.querySelector('.full-details');
         if (innerDetails) {
             innerDetails.style.display = "none";
-            const originalCard = wrapper.previousElementSibling;
-            if (originalCard) {
-                originalCard.querySelector('.card-footer').appendChild(innerDetails);
+            const originalCardId = wrapper.dataset.targetCardId;
+            if (originalCardId) {
+                const originalCard = document.getElementById(`details-${originalCardId}`).closest('.project-card');
+                if (originalCard) {
+                    originalCard.querySelector('.card-footer').appendChild(innerDetails);
+                    originalCard.dataset.expanded = "false";
+                }
             }
         }
         wrapper.remove();
@@ -411,16 +414,27 @@ function toggleDetails(index) {
     document.querySelectorAll('.toggle-btn').forEach(b => b.innerText = "Read Full Details");
 
     if (!isExpanded) {
-        // Create full-width inline wrapper that pushes lower posts down smoothly
+        // Create full-width wrapper spanning the entire row
         const wrapper = document.createElement('div');
         wrapper.className = 'expanded-row-wrapper';
+        wrapper.dataset.targetCardId = index;
         
         detailsDiv.style.display = "block";
         wrapper.appendChild(detailsDiv);
 
-        // Insert wrapper directly after the clicked card in the grid flow
-        card.parentNode.insertBefore(wrapper, card.nextSibling);
+        // Calculate grid columns to find the end of the current row so the other 2 cards stay visible on the same line
+        const cards = Array.from(grid.querySelectorAll('.project-card'));
+        const cardIndex = cards.indexOf(card);
+        const computedStyle = window.getComputedStyle(grid);
+        const columnsCount = computedStyle.getPropertyValue('grid-template-columns').split(' ').length;
+        
+        const rowIndex = Math.floor(cardIndex / columnsCount);
+        const lastCardInRowIndex = Math.min((rowIndex + 1) * columnsCount - 1, cards.length - 1);
+        const targetCardInDom = cards[lastCardInRowIndex];
 
+        targetCardInDom.parentNode.insertBefore(wrapper, targetCardInDom.nextSibling);
+
+        card.dataset.expanded = "true";
         btn.innerText = "Hide Details";
     }
 }
