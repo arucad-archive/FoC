@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     scrolling: "auto"
                 }
             },
-            // Prevents the lightbox container from panning/moving when dragging the 3D model
             Carousel: {
                 Panzoom: {
                     touch: (panzoom, event) => {
@@ -48,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             on: {
                 done: (fancybox, slide) => {
-                    // Forces model-viewer to re-evaluate dimensions once lightbox transition completes
                     const viewer = slide.el.querySelector("model-viewer");
                     if (viewer && typeof viewer.dismissPoster === "function") {
                         viewer.dismissPoster();
@@ -121,7 +119,6 @@ function parseMarkdownFrontMatter(text) {
     const parts = text.split('---');
     let bodyContent = parts.length >= 3 ? parts.slice(2).join('---').trim() : "";
 
-    // Dynamic Base URL resolving from username & repo parameters
     const baseUrl = `https://${username.toLowerCase()}.github.io/${repo}`;
 
     const formatAssetPath = (path) => {
@@ -196,7 +193,6 @@ function renderVideoEmbed(url) {
     return "";
 }
 
-/* Render PDF Card for Grid and Launch Fancybox Lightbox on Click */
 function renderPdfThumbnail(pdfUrl, coverImgUrl, title, index) {
     if (!pdfUrl) return "";
 
@@ -304,7 +300,6 @@ function loadMoreProjects(countToLoad) {
         const metaText = metaParts.join(" • ");
 
         let mediaHTML = "";
-        // Priority order: Interactive Web > 3D Model > Video > Image > PDF
         if (project.interactiveUrl) {
             mediaHTML = renderInteractiveCard(project.interactiveUrl, project.interactiveCover || project.image, project.title);
         } else if (project.model3d) {
@@ -322,6 +317,10 @@ function loadMoreProjects(countToLoad) {
             mediaHTML = renderPdfThumbnail(project.pdf, project.pdfCover, project.title, index);
         }
 
+        /* SEPARATED CONTAINERS FIX:
+           1. .card-content holds top text & anchors technique (.excerpt) at the bottom
+           2. .card-footer holds button & expanding body so it NEVER shifts .excerpt upwards
+        */
         card.innerHTML = `
             ${mediaHTML}
             
@@ -331,19 +330,21 @@ function loadMoreProjects(countToLoad) {
                 ${project.excerpt ? `<p class="excerpt">${project.excerpt}</p>` : ''}
             </div>
 
-            ${project.pdf && (project.image || project.video || project.model3d || project.interactiveUrl) ? `
-                <a href="${project.pdf}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${project.title}" 
-                   data-umami-event="View Attached PDF" 
-                   data-umami-event-title="${project.title}" 
-                   class="pdf-link-btn">📄 View Attached PDF</a>
-            ` : ''}
-            
-            ${project.body ? `
-                <button class="toggle-btn" onclick="toggleDetails(${index})">Read Full Details</button>
-                <div id="details-${index}" class="full-details" style="display: none; margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
-                    ${formatMarkdownBody(project.body)}
-                </div>
-            ` : ''}
+            <div class="card-footer">
+                ${project.pdf && (project.image || project.video || project.model3d || project.interactiveUrl) ? `
+                    <a href="${project.pdf}" data-fancybox="${projectSlug}" data-type="pdf" data-caption="${project.title}" 
+                       data-umami-event="View Attached PDF" 
+                       data-umami-event-title="${project.title}" 
+                       class="pdf-link-btn">📄 View Attached PDF</a>
+                ` : ''}
+                
+                ${project.body ? `
+                    <button class="toggle-btn" onclick="toggleDetails(${index})">Read Full Details</button>
+                    <div id="details-${index}" class="full-details" style="display: none;">
+                        ${formatMarkdownBody(project.body)}
+                    </div>
+                ` : ''}
+            </div>
         `;
         grid.appendChild(card);
         visibleCount++;
