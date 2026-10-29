@@ -120,12 +120,12 @@ nav a:hover {
     display: inline-block;
 }
 
-/* Portfolio Grid */
+/* Portfolio Grid: Each card acts as an independent grid item container */
 .portfolio-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 40px 30px;
-    align-items: stretch;
+    align-items: start; /* Allows individual cells to grow independently when expanded */
     position: relative;
     z-index: 1;
 }
@@ -338,22 +338,19 @@ nav a:hover {
     color: var(--bg-color);
 }
 
-/* Row wrapper that spans the entire row width cleanly */
+/* INLINE EXPANDED DRAWER: Scoped entirely inside the clicked card's column */
 .expanded-row-wrapper {
-    grid-column: 1 / -1;
     background-color: var(--bg-color);
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
-    padding: 24px 20px;
-    margin: 15px 0;
+    padding: 15px 0;
+    margin-top: 15px;
     width: 100%;
 }
 
 .expanded-row-wrapper .full-details {
-    max-width: 900px;
-    margin: 0 auto;
     line-height: 1.6;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 footer {
