@@ -25,12 +25,12 @@ body {
     margin: 0 auto;
 }
 
-/* Sticky Header */
+/* Updated Sticky Header */
 header {
     position: sticky;
     top: 0;
-    z-index: 1000;
-    background-color: var(--bg-color);
+    z-index: 1000;                      /* Keeps menu above scrolling cards */
+    background-color: var(--bg-color); /* Solid background using corrected variable */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -40,12 +40,14 @@ header {
     margin-bottom: 40px;
 }
 
+/* Container keeping logo & text together on the left */
 .brand {
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
+/* Align site title and logo inline */
 .site-title {
     font-size: 1.8rem !important;
     font-weight: bold;
@@ -53,18 +55,21 @@ header {
     line-height: 1.2;
 }
 
+/* Logo Sizing */
 .site-logo {
     height: 52px;
     width: auto;
     display: block;
 }
 
+/* Desktop Right Header Layout */
 .header-right {
     display: flex;
     align-items: center;
     gap: 25px;
 }
 
+/* Desktop Social Links Vertical Stack */
 .social-links {
     display: flex;
     flex-direction: column;
@@ -109,6 +114,7 @@ nav a:hover {
     margin-bottom: 50px;
 }
 
+/* Section heading matching top navigation menu style */
 .section-nav-title {
     font-size: 0.95rem;
     font-weight: 700;
@@ -120,31 +126,33 @@ nav a:hover {
     display: inline-block;
 }
 
-/* Portfolio Grid: Each card acts as an independent grid item container */
+/* Portfolio Grid */
 .portfolio-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 40px 30px;
-    align-items: start; /* Allows individual cells to grow independently when expanded */
+    align-items: stretch;
     position: relative;
     z-index: 1;
 }
 
-/* Project Card Flex Container */
+/* Project Card Flex Layout */
 .project-card {
     text-decoration: none;
     color: var(--text-color);
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100% !important;
 }
 
+/* Card Content Container */
 .card-content {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
 }
 
+/* Shared fixed-size media containers */
 .image-container,
 .video-container,
 .pdf-container {
@@ -169,6 +177,7 @@ nav a:hover {
     opacity: 0.85;
 }
 
+/* PDF Grid Card Styling */
 .pdf-card-wrapper {
     background: #2a2a2e;
 }
@@ -212,6 +221,7 @@ nav a:hover {
     color: #dddddd;
 }
 
+/* Fix YouTube iframe scaling */
 .video-container {
     padding-bottom: 0 !important;
     margin-top: 0;
@@ -229,9 +239,20 @@ nav a:hover {
     aspect-ratio: 16 / 9;
 }
 
+/* Embedded PDF Web Component Styling */
+.pdf-container iframe,
+.pdf-container embed-pdf,
+embed-pdf {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    border: none;
+}
+
+/* PDF View Button/Link */
 .pdf-link-btn {
     display: inline-block;
-    margin-bottom: 10px;
+    margin-top: 8px;
     font-size: 0.85rem;
     color: #0066cc;
     text-decoration: underline;
@@ -255,21 +276,16 @@ nav a:hover {
     font-size: 1.2rem;
     font-weight: 500;
     margin-bottom: 8px;
+    flex-grow: 1;
 }
 
 .excerpt {
     font-size: 0.9rem;
     color: var(--muted-color);
-    margin-top: auto;
     margin-bottom: 12px;
 }
 
-.card-footer {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
+/* Filter Navigation Buttons */
 .filter-container {
     display: flex;
     gap: 20px;
@@ -300,6 +316,7 @@ nav a:hover {
     border-radius: 0;
 }
 
+/* Clickable Project Links */
 .full-details a.project-link {
     color: #0066cc;
     text-decoration: underline;
@@ -311,6 +328,7 @@ nav a:hover {
     color: #004499;
 }
 
+/* Loading Placeholder Text */
 .loading-text {
     color: var(--muted-color, #777777);
     font-size: 0.95rem;
@@ -318,6 +336,7 @@ nav a:hover {
     padding: 30px 0;
 }
 
+/* Read Details Toggle Button */
 .toggle-btn {
     background: transparent;
     border: 1px solid var(--border-color, #eeeeee);
@@ -329,8 +348,6 @@ nav a:hover {
     border-radius: 4px;
     transition: all 0.2s ease;
     width: 100%;
-    position: relative;
-    z-index: 5;
 }
 
 .toggle-btn:hover {
@@ -338,21 +355,13 @@ nav a:hover {
     color: var(--bg-color);
 }
 
-/* INLINE EXPANDED DRAWER: Scoped entirely inside the clicked card's column */
-.expanded-row-wrapper {
-    background-color: var(--bg-color);
-    border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-    padding: 15px 0;
-    margin-top: 15px;
-    width: 100%;
-}
-
-.expanded-row-wrapper .full-details {
+.full-details {
     line-height: 1.6;
     font-size: 0.9rem;
+    margin-top: 10px;
 }
 
+/* Footer Section */
 footer {
     margin-top: 80px;
     padding-top: 20px;
@@ -361,6 +370,7 @@ footer {
     font-size: 0.85rem;
 }
 
+/* 3D Model Badge & Lightbox Container */
 .badge-3d {
     position: absolute;
     bottom: 10px;
@@ -390,10 +400,12 @@ footer {
     display: block;
 }
 
+/* CRITICAL FIX: Forces Fancybox Lightbox to sit above the mobile header */
 .fancybox__container {
     z-index: 999999 !important;
 }
 
+/* Mobile Responsive Adjustments */
 @media (max-width: 768px) {
     .container {
         padding: 15px;
@@ -415,8 +427,68 @@ footer {
         border-bottom: 1px solid var(--border-color);
     } 
 
+    /* Ensures internal elements inherit the solid background completely */
+    header *,
+    .brand, 
+    .header-right, 
+    .filter-container {
+        background-color: var(--bg-color) !important;
+    } 
+
+    .brand {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .header-right {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .filter-container {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    /* HORIZONTAL SOCIAL LINKS ON MOBILE */
+    .social-links {
+        display: flex;
+        flex-direction: row;        /* Changes vertical stack to side-by-side row */
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 16px;                  /* Spacing between social icons */
+        margin-top: 5px;
+    }
+
+    .site-title {
+        font-size: 1.3rem !important;
+        white-space: normal;
+    }
+    
+    .site-logo {
+        height: 40px;
+    }
+
     .portfolio-grid {
         grid-template-columns: 1fr;
-        gap: 25px;
+        gap: 15px;
+    }
+
+    .image-container,
+    .video-container,
+    .pdf-container {
+        height: 200px !important;
+    }
+
+    .toggle-btn {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        min-height: 44px;
     }
 }
