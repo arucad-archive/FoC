@@ -54,8 +54,8 @@ collections:
       - { label: "Technique or materials", name: "excerpt", widget: "text", required: false }
       - { label: "Full Project Details", name: "body", widget: "markdown", required: false }
 
-  - name: "nmc_projects"
-    label: "NMC Projects"
+  - name: "ymed_projects"
+    label: "YMED Projects"
     folder: "content/projects"
     filter: { field: "category", value: "YMED" }
     create: true
