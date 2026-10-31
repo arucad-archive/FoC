@@ -1,8 +1,8 @@
 :root {
     --bg-color: #FEFEFA; 
     --text-color: #484d51;
-    --muted-color: #666666;
-    --border-color: #494C50;
+    --muted-color: #666666;  /* light text before clicked */
+    --border-color: #494C50; 
     --pdf-color: #f4f4f4;
 }
 
